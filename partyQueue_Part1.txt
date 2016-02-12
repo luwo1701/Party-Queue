@@ -1,0 +1,14 @@
+Luke Worley
+Title: Party Queue
+
+Description: Party Queue is a smartphone app that allows a group of people to create a queue of songs democratically.
+
+Vision Statement: Choose music that everyone likes.
+
+Motivation: Choosing music with a large group of people can be nerve racking and you can receive quite a bit of grief from people. The app would allow people hosting to appease everyones musical desires democratically.
+
+Risks:
+-Little experience with android studio or swift
+-Using API from music apps could be hard
+
+Mitigation:
