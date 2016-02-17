@@ -21,7 +21,6 @@ Choosing music with a large group of people can be nerve racking and you can rec
 
 |  ID| Functional Requirements  | Agile Sizing  |   |   |
 |---|---|---|---| --- |
-|   |   |   |   |   |
 | 1 | Join queue   |   |   |   |
 | 2  | As a programmer I would like users to be able to search for available songs in the spotify library.    |   |   |   |
 | 3   |       As a programmer i would like to design an intuitive interface for the Android app   |     |  |  |
