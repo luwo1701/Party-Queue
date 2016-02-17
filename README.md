@@ -1,4 +1,4 @@
-## CSCI 3309 Project: Party-Queue
+## CSCI 3308 Project: Party-Queue
 A social party playlist. Users can vote on songs in a queue, and the songs are
 played in the order of highest votes.
 
