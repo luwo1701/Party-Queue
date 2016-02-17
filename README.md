@@ -29,3 +29,9 @@ Mitigation:
 |User wants to  | User wants to veto highest voted song  |   |   |   |
 |   |   |   |   |   |
 
+
+Project Tracking Software: 
+Git Hub Issues and Milestones
+
+Project Plan:
+
