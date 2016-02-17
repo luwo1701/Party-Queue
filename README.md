@@ -19,6 +19,8 @@ Choosing music with a large group of people can be nerve racking and you can rec
 #### Mitigation:
 * Intro to Android studio book has been purchased
 
+#### Requirements:
+
 |  ID| Functional Requirements  | Agile Sizing  |   |   |
 |---|---|---|---| --- |
 | 1 |Become a collaborator | 3   |   |   |
