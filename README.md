@@ -15,14 +15,16 @@ Risks:
 Mitigation:
 -Intro to Android studio book has been purchased
 
-| Functional Requirements  | |   |   |   |
-|---|---|---|---|
+| Functional Requirements  |  |   |   |   |
+|---|---|---|---| --- |
 | ID  |   |   |   |   |
 | 1 | Join queue   |   |   |   |
 | 2  | Add To Queue   |   |   |   |
-| 3   |         |     |
+| 3   |         |     |  |  |
+
+
 | User Requirements  | |   |   |   |
-|---|---|---|---|
+|---|---|---|---|--- |
 |  ID |   |   |   |   |
 |User wants to  | User wants to veto highest voted song  |   |   |   |
 |   |   |   |   |   |
