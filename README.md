@@ -21,7 +21,6 @@ Choosing music with a large group of people can be nerve racking and you can rec
 
 |  ID| Functional Requirements  | Agile Sizing  |   |   |
 |---|---|---|---| --- |
-|   |   |   |   |   |
 | 1 | Join queue   |   |   |   |
 | 2  | As a programmer I would like users to be able to search for available songs in the spotify library.    |   |   |   |
 | 3   |       As a programmer i would like to design an intuitive interface for the Android app   |     |  |  |
@@ -35,8 +34,8 @@ Choosing music with a large group of people can be nerve racking and you can rec
 |  3 | As a party master, I would like to be able to invite party guests|   |   |   |
 |4  |As a party guest, I would like to discover my hosts’ current Party Queue via the browser or the Party Queue app| | | |
 | 5| As a party master I would like to be able to veto next song incase I really want to hear something else| | | |
- | 6 | As a guest I would like to be able to see other users playlists to get a feel for what genres other people like| | | |
- | 7 | As a party guest I would like to see when songs have been added| | | |
+| 6 | As a guest I would like to be able to see other users playlists to get a feel for what genres other people like| | | 
+| 7 | As a party guest I would like to see when songs have been added| | | |
 
 
 #### Methodology:
