@@ -37,7 +37,7 @@ Choosing music with a large group of people can be nerve racking and you can rec
   |   |   |   |
   
 |4  |As a party guest, I would like to discover my hosts’ current Party Queue via the browser or the Party Queue app
-  | | |
+  | | | |
   
 | 5| As a party master I would like to be able to veto next song incase I really want to hear something else
  | | | |
