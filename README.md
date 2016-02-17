@@ -8,7 +8,7 @@ Party Queue is a smartphone app that allows a group of people to create a queue 
 #### Vision Statement: 
 Play music that everyone likes.
 
-##### Motivation: 
+#### Motivation: 
 Choosing music with a large group of people can be nerve racking and you can receive quite a bit of grief from people. Not only this but people at parties will often bother whoever is playing music to play the song they want.  The app would allow people hosting to appease everyones musical desires democratically. It would also let whoever is hosting the party actively choose music at times but not be responsible at all times. 
 
 #### Risks:
@@ -33,13 +33,15 @@ Choosing music with a large group of people can be nerve racking and you can rec
 | 2 | User wants to veto highest voted song  |   |   |   |
 |  3 |   |   |   |   |
 
+#### Methodology:
+Agile process
 
 #### Project Tracking Software: 
 Git Hub Issues and Milestones
 
-##### Project Plan:
+#### Project Plan:
 
-##### Collaborators:
+#### Collaborators:
 * Luke Whorley, Student in Mechanical Engineering, CU Boulder
 * Bu Sun Kim, Student in Computer Science, CU Boulder
 * Daniel Henderson, Student in Electrical and Computer Engineering, CU Boulder
