@@ -10,12 +10,20 @@ Motivation: Choosing music with a large group of people can be nerve racking and
 Risks:
 -Little experience with android studio or swift
 -Using API from music apps could be hard
+-Pushing broken code to master
 
 Mitigation:
 -Intro to Android studio book has been purchased
 
-| Functional Requirement  | User Requirement   |   |   |   |
-|---|---|---|---|---|
+| Functional Requirements  | |   |   |   |
+|---|---|---|---|
+| ID  |   |   |   |   |
+| 1 | Join queue   |   |   |   |
+| 2  | Add To Queue   |   |   |   |
+| 3   |         |     |
+| User Requirements  | |   |   |   |
+|---|---|---|---|
+|  ID |   |   |   |   |
+|User wants to  | User wants to veto highest voted song  |   |   |   |
 |   |   |   |   |   |
-|   |   |   |   |   |
-|   |   |   |   |   |
+
