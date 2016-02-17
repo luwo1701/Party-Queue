@@ -15,19 +15,19 @@ Risks:
 Mitigation:
 -Intro to Android studio book has been purchased
 
-| Functional Requirements  |  |   |   |   |
+|  ID| Functional Requirements  | Agile Sizing  |   |   |
 |---|---|---|---| --- |
-| ID  |   |   |   |   |
+|   |   |   |   |   |
 | 1 | Join queue   |   |   |   |
 | 2  | Add To Queue   |   |   |   |
 | 3   |         |     |  |  |
 
 
-| User Requirements  | |   |   |   |
+| ID  |User Requirements |  Agile Sizing |   |   |
 |---|---|---|---|--- |
-|  ID |   |   |   |   |
-|User wants to  | User wants to veto highest voted song  |   |   |   |
-|   |   |   |   |   |
+|1   |   |   |   |   |
+| 2 | User wants to veto highest voted song  |   |   |   |
+|  3 |   |   |   |   |
 
 
 Project Tracking Software: 
