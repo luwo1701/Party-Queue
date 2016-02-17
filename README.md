@@ -35,18 +35,14 @@ Choosing music with a large group of people can be nerve racking and you can rec
 | 2 | User wants to veto highest voted song  |   |   |   |
 |  3 | As a party master, I would like to be able to invite party guests
   |   |   |   |
-  
 |4  |As a party guest, I would like to discover my hosts’ current Party Queue via the browser or the Party Queue app
   | | | |
-  
 | 5| As a party master I would like to be able to veto next song incase I really want to hear something else
  | | | |
- 
  | 6 | As a guest I would like to be able to see other users playlists to get a feel for what genres other people like| | | |
  | 7 | As a party guest I would like to see when songs have been added
 | | | |
 
-| | | | | |
 
 #### Methodology:
 Agile process
