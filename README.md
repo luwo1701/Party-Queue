@@ -51,6 +51,6 @@ Git Hub Issues and Milestones
 
 #### Collaborators:
 * Luke Whorley, Student in Mechanical Engineering, CU Boulder
-* Bu Sun Kim, Student in Computer Science, CU Boulder
+* Bu Sun Kim, Student in Computer Science and Linguistics, CU Boulder
 * Daniel Henderson, Student in Electrical and Computer Engineering, CU Boulder
 * Corwin Sheahan, Student in Aerospace Engineering and Computer Science, CU Boulder
