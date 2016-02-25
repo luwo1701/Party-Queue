@@ -1,4 +1,4 @@
-package com.example.busun.party_queue;
+package party_queue.myapplication;
 
 import org.junit.Test;
 

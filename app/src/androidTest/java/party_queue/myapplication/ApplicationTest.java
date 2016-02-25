@@ -1,4 +1,4 @@
-package com.example.busun.party_queue;
+package party_queue.myapplication;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
