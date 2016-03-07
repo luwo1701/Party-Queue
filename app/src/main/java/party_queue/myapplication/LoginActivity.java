@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // TODO: Implement your own authentication logic here.
 
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -106,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
+
         finish();
     }
 
