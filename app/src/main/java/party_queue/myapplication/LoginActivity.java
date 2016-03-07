@@ -108,7 +108,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
-
+        Intent intent = new Intent(this, SpotifyActivity.class);
+        startActivity(intent);
         finish();
     }
 

@@ -20,10 +20,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-       /* Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);*/
-        Intent intent = new Intent(this, SpotifyActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+
     }
 
     @Override
