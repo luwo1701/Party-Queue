@@ -24,7 +24,7 @@ import com.spotify.sdk.android.player.PlayerState;
 
 
 
-public class SpotifyActivity extends Activity implements
+public class SpotifyActivity extends AppCompatActivity implements
         PlayerNotificationCallback, ConnectionStateCallback {
 
     // TODO: Replace with your client ID
@@ -42,7 +42,7 @@ public class SpotifyActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify);
-
+        Log.d("SpotifyActivity", "Started Activity");
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
         builder.setScopes(new String[]{"user-read-private", "streaming"});
