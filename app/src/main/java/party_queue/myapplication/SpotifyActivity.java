@@ -21,6 +21,12 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
+import com.spotify.sdk.android.player.Spotify;
+
+
+
+import com.spotify.sdk.android.player.PlayerStateCallback;
+
 
 
 
@@ -76,7 +82,6 @@ public class SpotifyActivity extends AppCompatActivity implements
             }
         }
     }
-
     @Override
     public void onLoggedIn() {
         Log.d("SpotifyActivity", "User logged in");
