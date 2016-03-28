@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 import android.app.Activity;
@@ -21,7 +24,12 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
+import android.view.View;
+import android.widget.TextView;
 
+import co.mobiwise.playerview.MusicPlayerView;
+import com.android.volley.toolbox.*;
+import com.android.volley.*;
 
 
 public class SpotifyActivity extends AppCompatActivity implements
@@ -37,6 +45,9 @@ public class SpotifyActivity extends AppCompatActivity implements
     private static final int REQUEST_CODE = 1337;
 
     private Player mPlayer;
+    MusicPlayerView mpv;
+    String trackID;
+    boolean playstart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,60 @@ public class SpotifyActivity extends AppCompatActivity implements
         AuthenticationRequest request = builder.build();
 
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+        trackID = "3ziCNz5vq8pEeRZjPElfYR";
+        mpv = (MusicPlayerView) findViewById(R.id.mpv);
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+
+        //mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
+
+        mpv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mpv.isRotating()) {
+                    mpv.stop();
+                    mPlayer.pause();
+                } else {
+                    mpv.start();
+                    if (playstart) mPlayer.resume();
+                    else {mPlayer.play("spotify:track:"+trackID); playstart = true;}
+                }
+            }
+        });
+        final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
+        final TextView songView = (TextView) findViewById(R.id.textViewSong);
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+trackID, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                       // mTxtDisplay.setText("Response: " + response.toString());
+                        String img = "";
+                        String artist = "";
+                        String song = "";
+                        try {
+                            img = response.getJSONObject("album").getJSONArray("images").getJSONObject(1).getString("url");
+                            artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                            song = response.getString("name");
+
+                        } catch (JSONException e) {}
+                        if (!img.isEmpty()) mpv.setCoverURL(img);
+                        else mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
+                        if (!artist.isEmpty()) artistView.setText(artist);
+                        if (!song.isEmpty()) songView.setText(song);
+                        Log.d("SpotifyActivity", "img = " + img);
+                        Log.d("SpotifyActivity", "artist = " + artist);
+                        Log.d("SpotifyActivity", "song = " + song);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+        queue.add(jsObjRequest);
     }
 
     @Override
@@ -65,7 +130,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                     public void onInitialized(Player player) {
                         mPlayer.addConnectionStateCallback(SpotifyActivity.this);
                         mPlayer.addPlayerNotificationCallback(SpotifyActivity.this);
-                        mPlayer.play("spotify:track:0ENSn4fwAbCGeFGVUbXEU3");
+
                     }
 
                     @Override
