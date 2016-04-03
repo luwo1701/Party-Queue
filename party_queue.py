@@ -44,12 +44,13 @@ class HelloWorldApi(remote.Service):
     return STORED_GREETINGS
 
   MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
-          Greeting,
-          times=messages.IntegerField(2, variant=messages.Variant.INT32,
-                                        required=true)
-  @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting, 
-                    path='hellogreeting/{times}', http_method='POST',
-                    name='greetings.multiply')
+    Greeting,
+    times=messages.IntegerField(2, variant=messages.Variant.INT32,
+                                required=True))
+
+  @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting,
+          path='hellogreeting/{times}', http_method='POST',
+          name='greetings.multiply')
 
   ID_RESOURCE = endpoints.ResourceContainer(
       message_types.VoidMessage,
