@@ -8,3 +8,4 @@
 /captures
 .*.sw*
 test
+*.pyc
