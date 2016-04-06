@@ -11,6 +11,11 @@ from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
+ 
+# AUth'd clients
+#WEB_CLIENT_ID = 'replace this with your web client application ID'
+ANDROID_CLIENT_ID = 'replace this with your Android client ID'
+#ANDROID_AUDIENCE = WEB_CLIENT_ID
 
 # Simple Hello world, will delete/update this with our application
 package = 'Hello'
@@ -33,7 +38,10 @@ STORED_GREETINGS = GreetingCollection(items=[
 
 
 # SECOND SECTION
-@endpoints.api(name='helloworld', version='v1')
+@endpoints.api(name='helloworld', version='v1',
+               allowed_client_ids=[ANDROID_CLIENT_ID,
+                                   endpoints.API_EXPLORER_CLIENT_ID],
+               scopes=[endpoints.EMAIL_SCOPE])
 class HelloWorldApi(remote.Service):
   """Helloworld API v1."""
 
@@ -51,6 +59,9 @@ class HelloWorldApi(remote.Service):
   @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting,
           path='hellogreeting/{times}', http_method='POST',
           name='greetings.multiply')
+
+  def greetings_multiply(self, request):
+    return Greeting(message=request.message * request.times)
 
   ID_RESOURCE = endpoints.ResourceContainer(
       message_types.VoidMessage,
