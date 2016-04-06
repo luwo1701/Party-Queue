@@ -41,17 +41,30 @@ class Account(ndb.Model):
         user_query = cls.query_current_user()
         current_user = user_query.get()
         # TODO: Find out if name exists in Playlist set, and fix name if so
+
+        
         # TODO: Can we use the user id as the parent, or should it be ndb.Key???
         
-        new_pl = Playlist(parent=current_user.user_id(), name=name)
+        new_pl = Playlist(parent=current_user.key, name=name)
+        current_user.Playlists.append(new_pl)
+        current_user.put()
 
-
+    """
+    @classmethod
     def delete_playlist(self, name):
+        user_query = cls.query_current_user()
+        current_user = user_query.get()
 
-    def add_song(self):
+    @classmethod
+    def add_song(self, playlist):
+        user_query = cls.query_current_user()
+        current_user = user_query.get()
 
-    def remove_song(cls):
-        
+    @classmethod
+    def remove_song(cls, playlist):
+        user_query = cls.query_current_user()
+        current_user = user_query.get()
+    """     
     @classmethod
     def query_current_user(cls)
         # Gets a ndb.Query object bound to the current user
@@ -60,3 +73,45 @@ class Account(ndb.Model):
         if user_query is None:
             print "User not found in database"
         return user_query
+
+
+""" CLASS CONTAINING PLAYLISTS"""
+class Playlist(ndb.Model):
+    songs = ndb.StructuredProperty(Song, repeated=True)
+    name = ndb.StringProperty(required=True)
+
+"""
+    @classmethod
+    def rename(cls, new):
+
+    @classmethod
+    def add_song(cls):
+        # Add a song
+
+    @classmethod
+    def delete_song(cls):
+        # Delete a song
+        """
+
+
+""" CLASS CONTAINING SONGS"""
+class Song(ndb.Model):
+    name = ndb.StringProperty(required=True)
+    vote_count = ndb.IntegerProperty()
+
+"""
+    @classmethod
+    def upvote(cls, name):
+        # Increment vote_count 
+        song_query = get_song_by_name(name)
+        if song_query is None:
+            print "Song not found in playlist"
+        
+
+    def downvote(cls, name):
+        # Decrement vote count
+
+    @classmethod
+    def get_song_by_name(cls, name):
+        return cls.query(cls.name == name)
+        "
