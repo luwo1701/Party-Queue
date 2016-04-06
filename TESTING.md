@@ -1,7 +1,11 @@
 Who: Luke Worley, Corwin Sheehan, Daniel Henderson, Bu Sun Kim
+
 Title: Party Queue  
-Vision: from Project Part 1 Proposal
+
+Vision: Play music that everyone likes.
+
 Automated Tests: Explanation and screenshot (see above)
+
 User Acceptance Tests:
 
 
