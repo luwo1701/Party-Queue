@@ -20,6 +20,7 @@ User Acceptance Tests:
 |**Pre-Conditions:**|Make sure user has spotify Premium account. If not provide them with one|
 | **Description** |Confirm user is able to sign into their spotify account|
 |**Frequency of Use**|Single use.|
+|------|------|
 |**Flow of Events**|**Actor Action| System Response| Comments|
 |                  | Sign into party queue with an email address and password between 4 and 10 characters| |  |
 |                 | 
