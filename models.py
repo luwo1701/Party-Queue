@@ -61,7 +61,7 @@ class Account(ndb.Model):
     """ Class for a user's account
     """
     username = ndb.StringProperty(required=True)
-    userid = ndb.IntegerProperty(required=True)
+    #userid = ndb.IntegerProperty(required=True)
     email = ndb.StringProperty(required=True)
     playlists = ndb.StructuredProperty(Playlist, repeated=True)
 

@@ -22,10 +22,12 @@ package = 'party-queue'
                                    endpoints.API_EXPLORER_CLIENT_ID],
                scopes=[endpoints.EMAIL_SCOPE]) 
 """
-@endpoints.api(name='party_queue', version='v1',
+"""
                allowed_client_ids=[WEB_CLIENT_ID,
                     endpoints.API_EXPLORER_CLIENT_ID],
                scopes=[endpoints.EMAIL_SCOPE])
+"""
+@endpoints.api(name='party_queue', version='v1')
 class PartyQueueApi(remote.Service):
     """ PARTY QUEUE API """
 
@@ -37,7 +39,6 @@ class PartyQueueApi(remote.Service):
         """
         # TODO: Add user authentication. Currently, we will create an acct 
         new_user = Account(username=request.username,
-                           userid=123,
                            email=request.email)
         new_user.put()
         return BlankResponse()
