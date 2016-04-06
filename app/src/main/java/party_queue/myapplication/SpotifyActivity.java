@@ -48,6 +48,9 @@ public class SpotifyActivity extends AppCompatActivity implements
     MusicPlayerView mpv;
     String trackID;
     boolean playstart = false;
+    final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
+    final TextView songView = (TextView) findViewById(R.id.textViewSong);
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,17 @@ public class SpotifyActivity extends AppCompatActivity implements
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
         trackID = "3ziCNz5vq8pEeRZjPElfYR";
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
-        RequestQueue queue = Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
+        String nextTrack;
+        String oldNext = getNextTrack();
+        while(true) {
+            PlayerState curstate;
+            mPlayer.getPlayerState(curstate);
+            //if(curstate.durationInMs - curstate.positionInMs)
+            nextTrack = getNextTrack();
+            if (nextTrack.length() > 1 && nextTrack != oldNext) {mPlayer.clearQueue();mPlayer.queue(nextTrack);}
+        }
+
 
 
         //mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
@@ -76,13 +89,15 @@ public class SpotifyActivity extends AppCompatActivity implements
                 } else {
                     mpv.start();
                     if (playstart) mPlayer.resume();
-                    else {mPlayer.play("spotify:track:"+trackID); playstart = true;}
+                    else {playSong(nextTrack); playstart = true;}
                 }
             }
         });
-        final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
-        final TextView songView = (TextView) findViewById(R.id.textViewSong);
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+
+        /*final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
+        final TextView songView = (TextView) findViewById(R.id.textViewSong);*/
+
+        /*JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+trackID, null, new Response.Listener<JSONObject>() {
 
                     @Override
@@ -113,7 +128,7 @@ public class SpotifyActivity extends AppCompatActivity implements
 
                     }
                 });
-        queue.add(jsObjRequest);
+        queue.add(jsObjRequest);*/
     }
 
     @Override
@@ -140,6 +155,51 @@ public class SpotifyActivity extends AppCompatActivity implements
                 });
             }
         }
+    }
+
+    public void playSong(String id) {
+        //play the track referred to by id
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+id, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // mTxtDisplay.setText("Response: " + response.toString());
+                        String img = "";
+                        String artist = "";
+                        String song = "";
+                        try {
+                            img = response.getJSONObject("album").getJSONArray("images").getJSONObject(1).getString("url");
+                            artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                            song = response.getString("name");
+
+                        } catch (JSONException e) {}
+                        if (!img.isEmpty()) mpv.setCoverURL(img);
+                        else mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
+                        if (!artist.isEmpty()) artistView.setText(artist);
+                        if (!song.isEmpty()) songView.setText(song);
+                        Log.d("SpotifyActivity", "img = " + img);
+                        Log.d("SpotifyActivity", "artist = " + artist);
+                        Log.d("SpotifyActivity", "song = " + song);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+        queue.add(jsObjRequest);
+        if (!playstart) mPlayer.play(id);
+
+        return;
+    }
+
+    public String getNextTrack(){
+        //access our google appengine api to get teh track id of the next track
+        return "test";
     }
 
     @Override
