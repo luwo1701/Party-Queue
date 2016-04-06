@@ -22,7 +22,9 @@ User Acceptance Tests:
 |**Frequency of Use**|Single use.|
 
 
-|**Flow of Events**|**Actor Action| System Response| Comments|
+|Flow of Events|Actor Action| System Response| Comments|
 |------|------|------|------|
-|                  | Sign into party queue with an email address and password between 4 and 10 characters| |  |
-
+|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| |  |
+|                 | 2. Enter Spotify login information| | |
+|Test Pass?| Pass/Fail| | |
+| Notes and Issues:| | | |
