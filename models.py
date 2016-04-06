@@ -29,16 +29,24 @@ class Account(ndb.Model):
         """ Updates an email on the account
         """
         user_query = cls.query_current_user()
-        if user_query is None:
-            print "User not found"
 
         current_user = user_query.get()
         current_user.email = email
-        
+        current_user.put()
           
-    def create_new_playlist(self):
+    @classmethod
+    def create_new_playlist(cls, name):
+        # Create's a new playlist. If playlist name already exists, creates
+        # playlist with name '{name}(1)'
+        user_query = cls.query_current_user()
+        current_user = user_query.get()
+        # TODO: Find out if name exists in Playlist set, and fix name if so
+        # TODO: Can we use the user id as the parent, or should it be ndb.Key???
+        
+        new_pl = Playlist(parent=current_user.user_id(), name=name)
 
-    def delete_playlist(self):
+
+    def delete_playlist(self, name):
 
     def add_song(self):
 
@@ -48,4 +56,7 @@ class Account(ndb.Model):
     def query_current_user(cls)
         # Gets a ndb.Query object bound to the current user
         current_user = get_current_user()
-        return cls.query(cls.userid == current_user.user_id())
+        user_query = cls.query(cls.userid == current_user.user_id())
+        if user_query is None:
+            print "User not found in database"
+        return user_query
