@@ -6,6 +6,7 @@ User Acceptance Tests:
 
 
 |  **Use Case ID:** | PQ-01 |
+|------|------|
 |**Use Case Name**|Sign in to Spotify|
 | **Description** |Confirm user is able to sign into their spotify account|
 
