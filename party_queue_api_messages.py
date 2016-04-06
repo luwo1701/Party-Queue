@@ -6,7 +6,11 @@ class AccountSetupRequest(messages.Message):
     username = messages.StringField(1)
     email = messages.StringField(2)
 
-class BlankResponse(messages.Message):
+class AccountResponse(messages.Message):
     """ Blank message response"""
+    id = messages.IntegerField(1)
+    username = messages.StringField(2)
+    email = messages.StringField(2)
+
 
 

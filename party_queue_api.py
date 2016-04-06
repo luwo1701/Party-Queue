@@ -8,7 +8,7 @@ from models import Account
 from models import Playlist
 from models import Song
 from party_queue_api_messages import AccountSetupRequest
-from party_queue_api_messages import BlankResponse
+from party_queue_api_messages import AccountResponse
 
 # TODO: Add authorized clients
 WEB_CLIENT_ID = 'replace this with your web client application ID'
@@ -31,7 +31,7 @@ package = 'party-queue'
 class PartyQueueApi(remote.Service):
     """ PARTY QUEUE API """
 
-    @endpoints.method(AccountSetupRequest, BlankResponse,
+    @endpoints.method(AccountSetupRequest, AccountResponse,
             path='signup', http_method='POST',
             name='party-queue.signup')
     def signup(self, request):
@@ -41,6 +41,13 @@ class PartyQueueApi(remote.Service):
         new_user = Account(username=request.username,
                            email=request.email)
         new_user.put()
-        return BlankResponse()
+        # Return user's ID
+        return AccountResponse(id=new_user.key.id())
+
+"""
+    @endpoints.method(AccountRequest, AccountResponse,
+            path='signup', http_method='POST',
+            name='party-queue.signup')
+            """
 
 APPLICATION = endpoints.api_server([PartyQueueApi])

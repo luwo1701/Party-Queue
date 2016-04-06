@@ -107,10 +107,10 @@ class Account(ndb.Model):
         current_user = user_query.get()
     """     
     @classmethod
-    def query_current_user(cls):
+    def query_current_user(cls, id):
         # Gets a ndb.Query object bound to the current user
-        current_user = get_current_user()
-        user_query = cls.query(cls.userid == current_user.user_id())
+        #current_user = get_current_user()
+        user_query = cls.query(cls.id == id)
         if user_query is None:
             print "User not found in database"
         return user_query
