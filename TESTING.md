@@ -5,11 +5,17 @@ Automated Tests: Explanation and screenshot (see above)
 User Acceptance Tests:
 
 
-|------|------|
+
 |  **Use Case ID:** | PQ-01 |
+|------|------|
 |**Use Case Name**|Sign in to Spotify|
 | **Description** |Confirm user is able to sign into their spotify account|
 
-| 2  | As a programmer I would like users to be able to search for available songs in the spotify library.    | 5  |   |   |
-
-| 3   |       As a programmer i would like to design an intuitive interface for the Android app   | 13  |  |  |
+|  **Users:** | Friends |
+|------|------|
+|**Pre-Conditions:**|Make sure user has spotify Premium account. If not provide them with one|
+| **Description** |Confirm user is able to sign into their spotify account|
+|**Frequency of Use**|Single use.|
+|**Flow of Events**|**Actor Action| System Response| Comments|
+|                  | Sign into party queue with an email address and password between 4 and 10 characters| |  |
+|                 | 
