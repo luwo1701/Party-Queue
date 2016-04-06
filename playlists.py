@@ -4,8 +4,7 @@ class Playlist(ndb.Model):
     songs = ndb.StructuredProperty(Song, repeated=True)
     name = ndb.StringProperty(required=True)
 
-    # TODO: Investigate parent stuffs. ownedby should be parent ID???
-
+"""
     @classmethod
     def rename(cls, new):
 
@@ -16,11 +15,13 @@ class Playlist(ndb.Model):
     @classmethod
     def delete_song(cls):
         # Delete a song
+        """
 
 class Song(ndb.Model):
     name = ndb.StringProperty(required=True)
     vote_count = ndb.IntegerProperty()
 
+"""
     @classmethod
     def upvote(cls, name):
         # Increment vote_count 
@@ -35,3 +36,4 @@ class Song(ndb.Model):
     @classmethod
     def get_song_by_name(cls, name):
         return cls.query(cls.name == name)
+        """

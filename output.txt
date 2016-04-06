@@ -1,0 +1,138 @@
+diff --git a/models.py b/models.py
+deleted file mode 100644
+index fc6fecd..0000000
+--- a/models.py
++++ /dev/null
+@@ -1,62 +0,0 @@
+-"""
+-Use this module to update/query from database 
+-Assisting Source: https://github.com/GoogleCloudPlatform/appengine-endpoints-tictactoe-python
+-"""
+-
+-from google.appengine.ext import endpoints
+-from google.appengine.ext import ndb
+-import Playlist
+-
+-def get_current_user(raise_unauthorized=True):
+-    """ Returns current user. Raises unauthorized exception unless 
+-        raise_unauthorized is set to false
+-    """
+-    current_user = endpoints.get_current_user()
+-    if raise_unauthorized and current_user is None:
+-        raise endpoints.UnauthorizedException('Invalid token.')
+-    return current_user
+-
+-class Account(ndb.Model):
+-    """ Class for a user's account
+-    """
+-    username = ndb.StringProperty(required=True)
+-    userid = ndb.IntegerProperty(required=True)
+-    email = ndb.StringProperty(required=True)
+-    playlists = ndb.StructuredProperty(Playlist, repeated=True)
+-
+-    @classmethod
+-    def update_email(cls, email):
+-        """ Updates an email on the account
+-        """
+-        user_query = cls.query_current_user()
+-
+-        current_user = user_query.get()
+-        current_user.email = email
+-        current_user.put()
+-          
+-    @classmethod
+-    def create_new_playlist(cls, name):
+-        # Create's a new playlist. If playlist name already exists, creates
+-        # playlist with name '{name}(1)'
+-        user_query = cls.query_current_user()
+-        current_user = user_query.get()
+-        # TODO: Find out if name exists in Playlist set, and fix name if so
+-        # TODO: Can we use the user id as the parent, or should it be ndb.Key???
+-        
+-        new_pl = Playlist(parent=current_user.user_id(), name=name)
+-
+-
+-    def delete_playlist(self, name):
+-
+-    def add_song(self):
+-
+-    def remove_song(cls):
+-        
+-    @classmethod
+-    def query_current_user(cls)
+-        # Gets a ndb.Query object bound to the current user
+-        current_user = get_current_user()
+-        user_query = cls.query(cls.userid == current_user.user_id())
+-        if user_query is None:
+-            print "User not found in database"
+-        return user_query
+diff --git a/party_queue_api.py b/party_queue_api.py
+index 6876ab9..6f62e36 100644
+--- a/party_queue_api.py
++++ b/party_queue_api.py
+@@ -4,6 +4,9 @@ import endpoints
+ from protorpc import messages
+ from protorpc import message_types
+ from protorpc import remote
++from models import Account
++from models import Playlist
++from models import Song
+ 
+ # TODO: Add authorized clients
+ #WEB_CLIENT_ID = 'replace this with your web client application ID'
+@@ -12,6 +15,8 @@ ANDROID_CLIENT_ID = 'replace this with your Android client ID'
+ 
+ package 'party-queue'
+ 
++class 
++
+ 
+ @endpoints.api(name='party_queue', version='v1')
+         """ TODO: Add auth'd client list to api decorator
+@@ -19,7 +24,12 @@ package 'party-queue'
+                                    endpoints.API_EXPLORER_CLIENT_ID],
+                scopes=[endpoints.EMAIL_SCOPE])
+         """
+-
+ class PartyQueueApi(remote.Service):
+     """ PARTY QUEUE API """
+ 
++    @endpoints.method(, 
++
++    def add_current_user(self, request):
++        """ Adds current user to the datastore
++        """
++        
+diff --git a/playlists.py b/playlists.py
+index 8e2df9d..5ee8b4f 100644
+--- a/playlists.py
++++ b/playlists.py
+@@ -4,8 +4,7 @@ class Playlist(ndb.Model):
+     songs = ndb.StructuredProperty(Song, repeated=True)
+     name = ndb.StringProperty(required=True)
+ 
+-    # TODO: Investigate parent stuffs. ownedby should be parent ID???
+-
++"""
+     @classmethod
+     def rename(cls, new):
+ 
+@@ -16,11 +15,13 @@ class Playlist(ndb.Model):
+     @classmethod
+     def delete_song(cls):
+         # Delete a song
++        """
+ 
+ class Song(ndb.Model):
+     name = ndb.StringProperty(required=True)
+     vote_count = ndb.IntegerProperty()
+ 
++"""
+     @classmethod
+     def upvote(cls, name):
+         # Increment vote_count 
+@@ -35,3 +36,4 @@ class Song(ndb.Model):
+     @classmethod
+     def get_song_by_name(cls, name):
+         return cls.query(cls.name == name)
++        """
