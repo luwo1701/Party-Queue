@@ -17,6 +17,20 @@ See current unit tests for the frontend on this fork: https://github.com/busunki
 [Screenshot of Unittests](https://drive.google.com/file/d/1rhqs7-9Svk8_IyKgTpXQfo8AsDK9XcSWiw/view?usp=sharing)
 
 ###### Back end:
+Our backend is written in python2.x and hosted on google app engine. To run the tests, you will need to do the following:
+
+1. Clone this repository
+2. Due to heavy integration of our backend with google app engine, you will need the [google app engine sdk](https://cloud.google.com/appengine/downloads) to run the tests. 
+3. After installaction, navigate to where you clones the Party-Queue directory and change the system path insertions on lines 6-8 in models_test.py to:
+```
+sys.path.insert(1, '/path/to/google_appengine')
+sys.path.insert(1, '/path/to/google_appengine/lib/yaml/lib')
+sys.path.insert(1, '/path/to/Party-Queue/lib')
+```
+Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
+4. Run `python models_test.py`
+5. Expected output:
+
 
 User Acceptance Tests:
 
