@@ -11,22 +11,13 @@ class Song(ndb.Model):
     name = ndb.StringProperty(required=True)
     vote_count = ndb.IntegerProperty()
 
-"""
-    @classmethod
-    def upvote(cls, name):
-        # Increment vote_count 
-        song_query = get_song_by_name(name)
-        if song_query is None:
-            print "Song not found in playlist"
-        
+    def upvote(self):
+        self.vote_count = self.vote_count + 1
+        self.put()
 
     def downvote(cls, name):
-        # Decrement vote count
-
-    @classmethod
-    def get_song_by_name(cls, name):
-        return cls.query(cls.name == name)
-"""
+        self.vote_count = self.vote_count - 1
+        self.put()
 
 """ CLASS CONTAINING PLAYLISTS"""
 class Playlist(ndb.Model):
@@ -60,6 +51,25 @@ class Playlist(ndb.Model):
                              vote_count=0))
         pl.put()
         return pl
+
+"""
+    @classmethod
+    def upvote(cls, request):
+        pl = cls.find_by_id(request.pid)
+        index = [Song.spotify_id for y in pl.songs].index(request.spotify_id)
+        pl.songs[index].upvote()
+        pl.put()
+
+    @classmethod
+    def upvote(cls, request):
+        pl = cls.find_by_id(request.pid)
+        song = filter(lambda Song: Song.spotify_id==request.spotify_id, pl.songs)
+        if len(song) is not 1:
+            print "More than one song with unique spotify id"
+        #song[0].downvote()
+        pl.put()
+        """
+
 
 """
     @classmethod

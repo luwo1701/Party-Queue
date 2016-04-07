@@ -1,6 +1,7 @@
 """ 
     Unit-Testing file for models.py
 """
+
 import sys
 sys.path.insert(1, '/home/user/Downloads/google_appengine')
 sys.path.insert(1, '/home/user/Downloads/google_appengine/lib/yaml/lib')
@@ -18,6 +19,13 @@ class AccountRequest:
     def __init__(self, username, email):
         self.username = username
         self.email = email
+
+class PlaylistRequest:
+    """ Helper Class to simulate a Playlist request """
+    def __init__(self, pid, spotify_id, name):
+        self.pid = pid
+        self.spotify_id = spotify_id
+        self.name = name
 
 class TestModelsTestCase(unittest.TestCase):
     def setUp(self):
@@ -128,24 +136,58 @@ class TestModelsTestCase(unittest.TestCase):
 
     def test_playlist(self):
         owner=Account(username='Mr. Magoo', email='mm123@gmail.com').put()
-        pl = Playlist(owner=owner, name='MM\'s awesome playlist')
-        pl.put()
+        pl = []
+        pl.append(Playlist(owner=owner, name='MM\'s awesome playlist'))
+        pl[0].put()
         self.assertEqual(1, len(Playlist.query().fetch(2)))
         
         # test find by id
-        found_pl = Playlist.find_by_id(pl.key.id())
-        self.assertEqual(pl, found_pl, 'Failed to find playlist based on id')
+        found = Playlist.find_by_id(pl[0].key.id())
+        self.assertEqual(pl[0], found, 'Failed to find playlist based on id')
+
+        # test add new playlist
+        pl.append(Playlist.add_new_playlist(owner, 
+                            'A great playlist'))
+        self.assertEqual(2, len(Playlist.query().fetch(3)))
 
         # test find by owner
-        found_pl = Playlist.find_by_owner(owner).get()
-        self.assertEqual(pl, found_pl, 'Failed to find playlist based on owner')
+        pl.append(Playlist(owner=owner, name='MM\'s other awesome playlist'))
+        pl[2].put()
+        self.assertEqual(3, len(Playlist.query().fetch(4)))
 
-        new_pl = Playlist(owner=owner, name='MM\'s other awesome playlist')
-        new_pl.put()
-        self.assertEqual(2, len(Playlist.query().fetch(2)))
+        pl_sorted = sorted(pl, key=lambda Playlist: Playlist.name) 
+        found_pl = Playlist.find_by_owner(owner).fetch(3)
+        for i in range(len(found_pl)):
+            self.assertEqual(pl_sorted[i], found_pl[i])
 
+        # test add song
+        request = PlaylistRequest(pl_sorted[0].key.id(),
+                                  '1892300kdkeo',
+                                  'Space Oddity')
+        Playlist.add_song(request)
+        self.assertEqual(1, len(pl_sorted[0].songs), 'add_song failed to add song')
+        self.assertEqual('1892300kdkeo', pl_sorted[0].songs[0].spotify_id)
+        self.assertEqual('Space Oddity', pl_sorted[0].songs[0].name)
+        self.assertEqual(0, pl_sorted[0].songs[0].vote_count)
 
+# TODO: Implement testing of up/downvote, and upvote of song on playlist
+"""
+        # Upvote a song
+        new_request = PlaylistRequest(pl_sorted[0].key.id(),
+                                  'asdlfjsadlfkj',
+                                  'What A Wonderful World')
+        Playlist.add_song(new_request)
+
+        Playlist.upvote(new_request)
+        index = [Song.spotify_id for y in pl_sorted[0].songs].index(new_request.spotify_id)
+        self.assertEqual(0, pl_sorted[0].songs[index].vote_count, 
+                pl_sorted[0].songs[1])
         
+        # Downvote a song
+        """
+
+
+
 # Main: Run Test Cases
 if __name__ == '__main__':
     unittest.main()
