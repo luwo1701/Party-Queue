@@ -41,7 +41,20 @@ class Song(ndb.Model):
 """ CLASS CONTAINING PLAYLISTS"""
 class Playlist(ndb.Model):
     #songs = ndb.LocalStructuredProperty(Song, repeated=True)
+    
+    owner = ndb.KeyProperty(required=True)
     name = ndb.StringProperty(required=True)
+    songs = ndb.StringProperty(repeated=True)
+
+    @classmethod
+    def find_by_id(cls, id):
+        user_query = cls.get_by_id(id)
+        return user_query
+
+    @classmethod
+    def find_by_owner(cls, ownerkey):
+        return cls.query(cls.owner == ownerkey).order(cls.name)
+        
 
 """
     @classmethod
@@ -54,7 +67,7 @@ class Playlist(ndb.Model):
     @classmethod
     def delete_song(cls):
         # Delete a song
-        """
+"""
 
 """ CLASS FOR USER ACCOUNTS"""
 class Account(ndb.Model):
@@ -63,7 +76,7 @@ class Account(ndb.Model):
     username = ndb.StringProperty(required=True)
     #userid = ndb.IntegerProperty(required=True)
     email = ndb.StringProperty(required=True)
-    playlists = ndb.StructuredProperty(Playlist, repeated=True)
+    #playlists = ndb.StructuredProperty(Playlist, repeated=True)
 
     @classmethod
     def update_email(cls, email):
@@ -110,9 +123,19 @@ class Account(ndb.Model):
     def query_current_user(cls, id):
         # Gets a ndb.Query object bound to the current user
         #current_user = get_current_user()
-        user_query = cls.query(cls.id == id)
+        user_query = cls.query(cls.key.id() == id)
         if user_query is None:
             print "User not found in database"
+        return user_query
+
+    @classmethod
+    def find_by_username(cls, username):
+        user_query = cls.query(cls.username == username)
+        return user_query
+
+    @classmethod
+    def find_by_id(cls, uid):
+        user_query = cls.get_by_id(uid)
         return user_query
 
 
