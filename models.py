@@ -3,17 +3,7 @@ Use this module to update/query from database
 Assisting Source: https://github.com/GoogleCloudPlatform/appengine-endpoints-tictactoe-python
 """
 
-from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
-
-def get_current_user(raise_unauthorized=True):
-    """ Returns current user. Raises unauthorized exception unless 
-        raise_unauthorized is set to false
-    """
-    current_user = endpoints.get_current_user()
-    if raise_unauthorized and current_user is None:
-        raise endpoints.UnauthorizedException('Invalid token.')
-    return current_user
 
 """ CLASS CONTAINING SONGS"""
 class Song(ndb.Model):
