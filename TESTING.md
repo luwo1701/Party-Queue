@@ -1,16 +1,22 @@
-Who: Luke Worley, Corwin Sheehan, Daniel Henderson, Bu Sun Kim
+# Party-Queue: Testing Document
 
-Title: Party Queue  
+#### Party-QueueTeam Members: 
+* Luke Worley 
+* Corwin Sheehan 
+* Daniel Henderson 
+* Bu Sun Kim
 
-Vision: Play music that everyone likes.
+#### Our Vision: Play music that everyone likes.
 
-Automated Tests: 
-
+#### Automated Tests: 
+###### Front end:
 For frontend tests for the Android application, JUnit 4 was used to create unit tests. Tests are located in the directory Party-Queue/app/src/test/java/party_queue/myapplication, and can be run in Android Studio as shown in the below screenshot. 
 
 See current unit tests for the frontend on this fork: https://github.com/busunkim96/Party-Queue/tree/master/app/src/test/java/party_queue/myapplication
 
 [Screenshot of Unittests](https://drive.google.com/file/d/1rhqs7-9Svk8_IyKgTpXQfo8AsDK9XcSWiw/view?usp=sharing)
+
+###### Back end:
 
 User Acceptance Tests:
 
