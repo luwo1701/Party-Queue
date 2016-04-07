@@ -36,7 +36,6 @@ class Song(ndb.Model):
     @classmethod
     def get_song_by_name(cls, name):
         return cls.query(cls.name == name)
-        "
 """
 
 """ CLASS CONTAINING PLAYLISTS"""
@@ -47,21 +46,35 @@ class Playlist(ndb.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        user_query = cls.get_by_id(id)
-        return user_query
+        """ Returns playlist entity mathching id """
+        user = cls.get_by_id(id)
+        return user
 
     @classmethod
     def find_by_owner(cls, ownerkey):
+        """ Returns list of playlist queries by owner key """
         return cls.query(cls.owner == ownerkey).order(cls.name)
+
+    @classmethod
+    def add_new_playlist(cls, ownerKey, name):
+        """ Returns new playlist entity """
+        new_pl = cls(owner=ownerKey, name=name)
+        new_pl.put()
+        return new_pl
         
+    @classmethod
+    def add_song(cls, request):
+        pl = cls.find_by_id(request.pid)
+        pl.songs.append(Song(spotify_id=request.spotify_id,
+                             name=request.name,
+                             vote_count=0))
+        pl.put()
+        return pl
 
 """
     @classmethod
     def rename(cls, new):
 
-    @classmethod
-    def add_song(cls):
-        # Add a song
 
     @classmethod
     def delete_song(cls):
@@ -70,70 +83,37 @@ class Playlist(ndb.Model):
 
 """ CLASS FOR USER ACCOUNTS"""
 class Account(ndb.Model):
-    """ Class for a user's account
-    """
+    """ Class for a user's account """
     username = ndb.StringProperty(required=True)
     email = ndb.StringProperty(required=True)
 
     @classmethod
-    def update_email(cls, email):
-        """ Updates an email on the account
-        """
-        user_query = cls.query_current_user()
-
-        current_user = user_query.get()
-        current_user.email = email
-        current_user.put()
-          
-    @classmethod
-    def create_new_playlist(cls, name):
-        # Create's a new playlist. If playlist name already exists, creates
-        # playlist with name '{name}(1)'
-        user_query = cls.query_current_user()
-        current_user = user_query.get()
-        # TODO: Find out if name exists in Playlist set, and fix name if so
-
-        
-        # TODO: Can we use the user id as the parent, or should it be ndb.Key???
-        
-        new_pl = Playlist(parent=current_user.key, name=name)
-        current_user.Playlists.append(new_pl)
-        current_user.put()
-
-    """
-    @classmethod
-    def delete_playlist(self, name):
-        user_query = cls.query_current_user()
-        current_user = user_query.get()
-
-    @classmethod
-    def add_song(self, playlist):
-        user_query = cls.query_current_user()
-        current_user = user_query.get()
-
-    @classmethod
-    def remove_song(cls, playlist):
-        user_query = cls.query_current_user()
-        current_user = user_query.get()
-    """     
-    @classmethod
-    def query_current_user(cls, id):
-        # Gets a ndb.Query object bound to the current user
-        #current_user = get_current_user()
-        user_query = cls.query(cls.key.id() == id)
-        if user_query is None:
-            print "User not found in database"
-        return user_query
+    def update_email(cls, id, email):
+        """ Updates an email on the account """
+        user = cls.find_by_id(id)
+        user.email = email
+        user.put()
 
     @classmethod
     def find_by_username(cls, username):
+        """ Returns a user entity by username """
         user_query = cls.query(cls.username == username)
-        return user_query
+        return user_query.get()
 
     @classmethod
-    def find_by_id(cls, uid):
-        user_query = cls.get_by_id(uid)
-        return user_query
+    def find_by_id(cls, id):
+        """ Returns a user entity by id """
+        user = cls.get_by_id(id)
+        return user
+
+    @classmethod
+    def add_new_user(cls, request):
+        if cls.find_by_username(request.username) is None:
+            new_user = cls(username=request.username,
+                           email=request.email)
+            new_user.put()
+            return new_user
+        return None
 
 
 
