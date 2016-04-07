@@ -15,7 +15,8 @@ For frontend tests for the Android application, JUnit 4 was used to create unit 
 
 See current unit tests for the frontend on this fork: https://github.com/busunkim96/Party-Queue/tree/master/app/src/test/java/party_queue/myapplication
 
-[Screenshot of Unittests](https://drive.google.com/file/d/1rhqs7-9Svk8_IyKgTpXQfo8AsDK9XcSWiw/view?usp=sharing)
+* Expected command line output:
+![Frontend Testing Output](https://github.com/luwo1701/Party-Queue/blob/master/screenshots/TestingOutputFrontend.png)
 
 ###### Back end:
 Our backend is written in python2.x and hosted on google app engine. To run the tests, you will need to do the following:
@@ -32,6 +33,8 @@ sys.path.insert(1, '/path/to/Party-Queue/lib')
 Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
 
 Now, run `python models_test.py`. Ignore output lines like `WARNING:root:initial generator _put_tasklet(context.py:348) raised BadValueError(Entity has uninitialized properties: name)`. This is an artifact of unit testing with google app engine's models and is expected behavior. 
+* Expected command line output:
+![Backend Testing Output](https://github.com/luwo1701/Party-Queue/blob/master/screenshots/TestingOutputBackend.png)
 
 If you run into any issues, please contact Corwin Sheahan at corwin.sheahan@colorado.edu
 
