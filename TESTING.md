@@ -29,11 +29,10 @@ sys.path.insert(1, '/path/to/Party-Queue/lib')
 ```
 Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
 
-4. Run `python models_test.py`
-5. Expected output:
+Now, run `python models_test.py`. Ignore output lines like `WARNING:root:initial generator _put_tasklet(context.py:348) raised BadValueError(Entity has uninitialized properties: name)`. This is an artifact of unit testing with google app engine's models and is expected behavior. 
 
 
-User Acceptance Tests:
+#### User Acceptance Tests:
 
 
 <p align="center"> <b>Test 1:</b> </p>
