@@ -1,18 +1,42 @@
-Who: Luke Worley, Corwin Sheehan, Daniel Henderson, Bu Sun Kim
+# Party-Queue: Testing Document
 
-Title: Party Queue  
+#### Party-QueueTeam Members: 
+* Luke Worley 
+* Corwin Sheehan 
+* Daniel Henderson 
+* Bu Sun Kim
 
-Vision: Play music that everyone likes.
+#### Our Vision: 
+Play music that everyone likes.
 
-Automated Tests: 
-
+#### Automated Tests: 
+###### Front end:
 For frontend tests for the Android application, JUnit 4 was used to create unit tests. Tests are located in the directory Party-Queue/app/src/test/java/party_queue/myapplication, and can be run in Android Studio as shown in the below screenshot. 
 
 See current unit tests for the frontend on this fork: https://github.com/busunkim96/Party-Queue/tree/master/app/src/test/java/party_queue/myapplication
 
 [Screenshot of Unittests](https://drive.google.com/file/d/1rhqs7-9Svk8_IyKgTpXQfo8AsDK9XcSWiw/view?usp=sharing)
 
-User Acceptance Tests:
+###### Back end:
+Our backend is written in python2.x and hosted on google app engine. To run the tests, you will need to do the following:
+
+1. Clone this repository
+2. Make sure you have python installed.
+2. Due to heavy integration of our backend with google app engine, you will need the [google app engine sdk](https://cloud.google.com/appengine/downloads) to run the tests. 
+3. After installaction, navigate to where you cloned the Party-Queue directory and change the system path insertions on lines 6-8 in models_test.py to:
+```
+sys.path.insert(1, '/path/to/google_appengine')
+sys.path.insert(1, '/path/to/google_appengine/lib/yaml/lib')
+sys.path.insert(1, '/path/to/Party-Queue/lib')
+```
+Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
+
+Now, run `python models_test.py`. Ignore output lines like `WARNING:root:initial generator _put_tasklet(context.py:348) raised BadValueError(Entity has uninitialized properties: name)`. This is an artifact of unit testing with google app engine's models and is expected behavior. 
+
+If you run into any issues, please contact Corwin Sheahan at corwin.sheahan@colorado.edu
+
+
+#### User Acceptance Tests:
 
 
 <p align="center"> <b>Test 1:</b> </p>
