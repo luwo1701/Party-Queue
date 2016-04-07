@@ -15,16 +15,17 @@ See current unit tests for the frontend on this fork: https://github.com/busunki
 User Acceptance Tests:
 
 
+**Test 1**
 
 |  **Use Case ID:** | PQ-01 |
 |------|------|
 |**Use Case Name:**|Sign in to Spotify|
-| **Description:** |Confirm user is able to sign into their spotify account|
+| **Description:** |Confirm user is able to sign into their spotify account and their authorization gives them authorization to see album artwork|
 
 |  **Users:** | Friends |
 |------|------|
 |**Pre-Conditions:**|Make sure user has spotify Premium account. If not provide them with one|
-| **Description:** |Confirm user is able to sign into their spotify account|
+| **Post-Conditions** |After entering their credentials a new screen appears with album artwork|
 |**Frequency of Use:**|Single use.|
 
 
@@ -35,6 +36,7 @@ User Acceptance Tests:
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
 
+**Test 2:**
 
 |  **Use Case ID:** | PQ-02 |
 |------|------|
@@ -57,6 +59,7 @@ User Acceptance Tests:
 | **Notes and Issues:**| | | |
 
 
+**Test 3:**
 |  **Use Case ID:** | PQ-03 |
 |------|------|
 |**Use Case Name:**|Valid Email Required|
