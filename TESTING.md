@@ -28,6 +28,7 @@ sys.path.insert(1, '/path/to/google_appengine/lib/yaml/lib')
 sys.path.insert(1, '/path/to/Party-Queue/lib')
 ```
 Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
+
 4. Run `python models_test.py`
 5. Expected output:
 
