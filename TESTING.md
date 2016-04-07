@@ -21,6 +21,7 @@ See current unit tests for the frontend on this fork: https://github.com/busunki
 Our backend is written in python2.x and hosted on google app engine. To run the tests, you will need to do the following:
 
 1. Clone this repository
+2. Make sure you have python installed.
 2. Due to heavy integration of our backend with google app engine, you will need the [google app engine sdk](https://cloud.google.com/appengine/downloads) to run the tests. 
 3. After installaction, navigate to where you cloned the Party-Queue directory and change the system path insertions on lines 6-8 in models_test.py to:
 ```
