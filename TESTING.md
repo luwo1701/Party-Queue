@@ -36,7 +36,7 @@ User Acceptance Tests:
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
 
-->**Test 2:**<-
+<center> **Test 2:**</center>
 
 |  **Use Case ID:** | PQ-02 |
 |------|------|
