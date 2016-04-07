@@ -19,17 +19,22 @@ class PlaylistRequest(messages.Message):
     name = messages.StringField(3)
     firstsong = messages.StringField(4)
 
+class SongMessage(messages.Message):
+    spotify_id = messages.StringField(1)
+    name = messages.StringField(2)
+    vote_count = messages.IntegerField(3)
+
 class PlaylistResponse(messages.Message):
     pid = messages.IntegerField(1)
     errmsg = messages.StringField(2)
     name = messages.StringField(3) 
-    songs = messages.StringField(4, repeated=True)
+    songs = messages.MessageField(SongMessage, 4, repeated=True)
 
 class MultiplePlaylistResponse(messages.Message):
-    pids = messages.IntegerField(1, repeated=True)
+    playlists = messages.MessageField(PlaylistResponse, 1, repeated=True)
 
 class AddSongRequest(messages.Message):
     pid = messages.IntegerField(1, required=True)
-    song = messages.StringField(2, required=True)
-
+    spotify_id = messages.StringField(2,required=True)
+    name = messages.StringField(3, required=True)
 

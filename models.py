@@ -17,6 +17,7 @@ def get_current_user(raise_unauthorized=True):
 
 """ CLASS CONTAINING SONGS"""
 class Song(ndb.Model):
+    spotify_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(required=True)
     vote_count = ndb.IntegerProperty()
 
@@ -40,11 +41,9 @@ class Song(ndb.Model):
 
 """ CLASS CONTAINING PLAYLISTS"""
 class Playlist(ndb.Model):
-    #songs = ndb.LocalStructuredProperty(Song, repeated=True)
-    
+    songs = ndb.StructuredProperty(Song, repeated=True)
     owner = ndb.KeyProperty(required=True)
     name = ndb.StringProperty(required=True)
-    songs = ndb.StringProperty(repeated=True)
 
     @classmethod
     def find_by_id(cls, id):
@@ -74,9 +73,7 @@ class Account(ndb.Model):
     """ Class for a user's account
     """
     username = ndb.StringProperty(required=True)
-    #userid = ndb.IntegerProperty(required=True)
     email = ndb.StringProperty(required=True)
-    #playlists = ndb.StructuredProperty(Playlist, repeated=True)
 
     @classmethod
     def update_email(cls, email):
