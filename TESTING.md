@@ -6,7 +6,8 @@
 * Daniel Henderson 
 * Bu Sun Kim
 
-#### Our Vision: Play music that everyone likes.
+#### Our Vision: 
+Play music that everyone likes.
 
 #### Automated Tests: 
 ###### Front end:
