@@ -22,7 +22,7 @@ Our backend is written in python2.x and hosted on google app engine. To run the 
 
 1. Clone this repository
 2. Due to heavy integration of our backend with google app engine, you will need the [google app engine sdk](https://cloud.google.com/appengine/downloads) to run the tests. 
-3. After installaction, navigate to where you clones the Party-Queue directory and change the system path insertions on lines 6-8 in models_test.py to:
+3. After installaction, navigate to where you cloned the Party-Queue directory and change the system path insertions on lines 6-8 in models_test.py to:
 ```
 sys.path.insert(1, '/path/to/google_appengine')
 sys.path.insert(1, '/path/to/google_appengine/lib/yaml/lib')
@@ -31,6 +31,8 @@ sys.path.insert(1, '/path/to/Party-Queue/lib')
 Replace `/path/to/google_appengine` with the path to where you installed the gae sdk, and replace `/path/to/Party-Queue/lib` with the path to where you cloned the Party-Queue directory.
 
 Now, run `python models_test.py`. Ignore output lines like `WARNING:root:initial generator _put_tasklet(context.py:348) raised BadValueError(Entity has uninitialized properties: name)`. This is an artifact of unit testing with google app engine's models and is expected behavior. 
+
+If you run into any issues, please contact Corwin Sheahan at corwin.sheahan@colorado.edu
 
 
 #### User Acceptance Tests:
