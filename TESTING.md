@@ -15,7 +15,7 @@ See current unit tests for the frontend on this fork: https://github.com/busunki
 User Acceptance Tests:
 
 
-<p align="center"> **Test 1** </p>
+<p align="center"> <b>Test 2:</b> </p>
 
 |  **Use Case ID:** | PQ-01 |
 |------|------|
@@ -36,7 +36,7 @@ User Acceptance Tests:
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
 
-<center> **Test 2:**</center>
+<p align="center"> <b>Test 1</b> </p>
 
 |  **Use Case ID:** | PQ-02 |
 |------|------|
@@ -59,7 +59,7 @@ User Acceptance Tests:
 | **Notes and Issues:**| | | |
 
 
-->**Test 3:**<-
+<p align="center"> <b>Test 3:</b> </p>
 
 |  **Use Case ID:** | PQ-03 |
 |------|------|
