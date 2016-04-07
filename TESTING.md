@@ -60,19 +60,18 @@ User Acceptance Tests:
 |  **Use Case ID:** | PQ-03 |
 |------|------|
 |**Use Case Name:**|Valid Email Required|
-| **Description:** |Confirm when user trys to login in to Part-Queue it require an @something.net or .edu etc|
+| **Description:** |Confirm when user trys to login in to Part-Queue it requires an @something.net or .edu etc|
 
 |  **Users:** | Friends |
 |------|------|
-|**Pre-Conditions:**|App |
-| **Post-Conditions:** |Audio Plays from device|
-|**Frequency of Use:**|Single use.|
+|**Pre-Conditions:**|App is installed on device |
+| **Post-Conditions:** |User is alerted if email does not contain @  symbol or .net, .edu, .org, or .com|
+|**Frequency of Use:**|Single use|
 
 
 |Flow of Events|Actor Action| System Response| Comments|
 |------|------|------|------|
-|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| |  |
-|                 | 2. Enter Spotify login information| | |
-|                 | 3. Press Play Button| | |
+|                  |1. Attempt to sign into party queue without a .com .edu or .org in email address| |  |
+|                 | 2. Attempt to sign into party queue without an @ sign| | |
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
