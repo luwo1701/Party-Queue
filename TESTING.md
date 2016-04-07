@@ -4,7 +4,11 @@ Title: Party Queue
 
 Vision: Play music that everyone likes.
 
-Automated Tests: Explanation and screenshot (see above)
+Automated Tests: 
+
+For frontend tests for the Android application, JUnit 4 was used to create unit tests. Tests are located in the directory party_queue.myapplication (test), and can be run in Android Studio.
+
+![Screenshot](https://drive.google.com/file/d/1rhqs7-9Svk8_IyKgTpXQfo8AsDK9XcSWiw/view?usp=sharing)
 
 User Acceptance Tests:
 
