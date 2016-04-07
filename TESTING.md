@@ -31,8 +31,8 @@ User Acceptance Tests:
 
 |Flow of Events|Actor Action| System Response| Comments|
 |------|------|------|------|
-|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| |  |
-|                 | 2. Enter Spotify login information| | |
+|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| Spotify Login Page appears|  |
+|                 | 2. Enter Spotify login information| New page should load with album artwork and play button | |
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
 
@@ -52,9 +52,9 @@ User Acceptance Tests:
 
 |Flow of Events|Actor Action| System Response| Comments|
 |------|------|------|------|
-|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| |  |
-|                 | 2. Enter Spotify login information| | |
-|                 | 3. Press Play Button| | |
+|                  |1. Sign into party queue with an email address and password between 4 and 10 characters| Spotify login page should appear |  |
+|                 | 2. Enter Spotify login information| New page should load with album artwork and a play button | |
+|                 | 3. Press Play Button|The audio from the song that is displayed should play| |
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
 
@@ -75,7 +75,7 @@ User Acceptance Tests:
 
 |Flow of Events|Actor Action| System Response| Comments|
 |------|------|------|------|
-|                  |1. Attempt to sign into party queue without a .com .edu or .org in email address| |  |
-|                 | 2. Attempt to sign into party queue without an @ sign| | |
+|                  |1. Attempt to sign into party queue without a .com .edu or .org in email address| Error should appear |  |
+|                 | 2. Attempt to sign into party queue without an @ sign| Error should appear | |
 |**Test Pass?:**| Pass/Fail| | |
 | **Notes and Issues:**| | | |
