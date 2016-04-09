@@ -25,8 +25,12 @@ import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import co.mobiwise.playerview.MusicPlayerView;
 import com.android.volley.toolbox.*;
 import com.android.volley.*;
@@ -34,6 +38,8 @@ import com.android.volley.*;
 
 public class SpotifyActivity extends AppCompatActivity implements
         PlayerNotificationCallback, ConnectionStateCallback {
+    @Bind(R.id.searchText)
+    EditText _searchText;
 
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "838ef695908c472fa60f131a52e0d149";
@@ -48,14 +54,12 @@ public class SpotifyActivity extends AppCompatActivity implements
     MusicPlayerView mpv;
     String trackID;
     boolean playstart = false;
-    final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
-    final TextView songView = (TextView) findViewById(R.id.textViewSong);
-    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify);
+        ButterKnife.bind(this);
         Log.d("SpotifyActivity", "Started Activity");
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
@@ -65,16 +69,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
         trackID = "3ziCNz5vq8pEeRZjPElfYR";
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
-        queue = Volley.newRequestQueue(this);
-        String nextTrack;
-        String oldNext = getNextTrack();
-        while(true) {
-            PlayerState curstate;
-            mPlayer.getPlayerState(curstate);
-            //if(curstate.durationInMs - curstate.positionInMs)
-            nextTrack = getNextTrack();
-            if (nextTrack.length() > 1 && nextTrack != oldNext) {mPlayer.clearQueue();mPlayer.queue(nextTrack);}
-        }
+        RequestQueue queue = Volley.newRequestQueue(this);
 
 
 
@@ -89,79 +84,14 @@ public class SpotifyActivity extends AppCompatActivity implements
                 } else {
                     mpv.start();
                     if (playstart) mPlayer.resume();
-                    else {playSong(nextTrack); playstart = true;}
+                    else {mPlayer.play("spotify:track:"+trackID); playstart = true;}
                 }
             }
         });
-
-        /*final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
-        final TextView songView = (TextView) findViewById(R.id.textViewSong);*/
-
-        /*JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+trackID, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                       // mTxtDisplay.setText("Response: " + response.toString());
-                        String img = "";
-                        String artist = "";
-                        String song = "";
-                        try {
-                            img = response.getJSONObject("album").getJSONArray("images").getJSONObject(1).getString("url");
-                            artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                            song = response.getString("name");
-
-                        } catch (JSONException e) {}
-                        if (!img.isEmpty()) mpv.setCoverURL(img);
-                        else mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
-                        if (!artist.isEmpty()) artistView.setText(artist);
-                        if (!song.isEmpty()) songView.setText(song);
-                        Log.d("SpotifyActivity", "img = " + img);
-                        Log.d("SpotifyActivity", "artist = " + artist);
-                        Log.d("SpotifyActivity", "song = " + song);
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-
-                    }
-                });
-        queue.add(jsObjRequest);*/
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            if (response.getType() == AuthenticationResponse.Type.TOKEN) {
-                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
-                mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
-                    @Override
-                    public void onInitialized(Player player) {
-                        mPlayer.addConnectionStateCallback(SpotifyActivity.this);
-                        mPlayer.addPlayerNotificationCallback(SpotifyActivity.this);
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        Log.e("SpotifyActivity", "Could not initialize player: " + throwable.getMessage());
-                    }
-                });
-            }
-        }
-    }
-
-    public void playSong(String id) {
-        //play the track referred to by id
-
+        final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
+        final TextView songView = (TextView) findViewById(R.id.textViewSong);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+id, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+trackID, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -192,14 +122,41 @@ public class SpotifyActivity extends AppCompatActivity implements
                     }
                 });
         queue.add(jsObjRequest);
-        if (!playstart) mPlayer.play(id);
-
-        return;
     }
 
-    public String getNextTrack(){
-        //access our google appengine api to get teh track id of the next track
-        return "test";
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            if (response.getType() == AuthenticationResponse.Type.TOKEN) {
+                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
+                mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
+                    @Override
+                    public void onInitialized(Player player) {
+                        mPlayer.addConnectionStateCallback(SpotifyActivity.this);
+                        mPlayer.addPlayerNotificationCallback(SpotifyActivity.this);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("SpotifyActivity", "Could not initialize player: " + throwable.getMessage());
+                    }
+                });
+            }
+        }
+    }
+
+    public void searchButtonClick(View v)
+    {
+        // do something when search button is clicked
+        String search = _searchText.getText().toString();
+        Button button = (Button) v;
+        ( (Button) v).setText(search);
+
     }
 
     @Override
