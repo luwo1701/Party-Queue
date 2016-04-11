@@ -141,14 +141,15 @@ public class SpotifyActivity extends AppCompatActivity implements
                     @Override
                     public void onResponse(JSONObject response) {
                         // mTxtDisplay.setText("Response: " + response.toString());
-                        String[] songs = new String[10];
-                        String[] artistnames = new String[10];
+                        String[] songId = new String[numResultsToShow];
+                        String[] artistnames = new String[numResultsToShow];
+                        String[] songName = new String[numResultsToShow];
                         try {
                             for (int i=0; i<10; i++) {
                                 //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                                songs[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("id");
+                                songId[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("id");
                                 artistnames[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-
+                                songName[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("name");
                             }
 
                         } catch (JSONException e) {}
@@ -160,8 +161,9 @@ public class SpotifyActivity extends AppCompatActivity implements
                                 popup.getMenuInflater()
                                         .inflate(R.menu.popup_menu, popup.getMenu());
 
-                                for (int i=0; i<3; i++) {
-                                    popup.getMenu().getItem(i).setTitle(artistnames[i]);
+                        for (int i = 0; i<numResultsToShow; i++) {
+                                    popup.getMenu().add("Artist: "+ artistnames[i]+ "\n" + "Song: " + songName[i]);
+                                    //popup.getMenu().getItem(i).setTitle(artistnames[i]);
                                 }
                                 //registering popup with OnMenuItemClickListener
                                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -182,7 +184,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                         //if (!song.isEmpty()) songView.setText(song);
                         for (int i=0; i<10; i++) {
                             //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                            Log.d("SpotifyActivity", "songs[" + i +"] = " + songs[i]);
+                            Log.d("SpotifyActivity", "songs[" + i +"] = " + songId[i]);
                             Log.d("SpotifyActivity", "artist[" + i +"] = " + artistnames[i]);
 
                         }
