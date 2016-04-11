@@ -96,7 +96,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         });
         final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
         final TextView songView = (TextView) findViewById(R.id.textViewSong);
-        String trackname = "breakdown";
+        //String trackname = "breakdown";
 
     }
 
@@ -128,31 +128,63 @@ public class SpotifyActivity extends AppCompatActivity implements
 
     public void searchButtonClick(View v)
     {
+
         // do something when search button is clicked
-        String search = _searchText.getText().toString(); //grabs string from _searchText text box defined in activity_spotify.xml
+        String search = _searchText.getText().toString().replaceAll(" ","+"); //grabs string from _searchText text box defined in activity_spotify.xml
+
         //JsonObjectRequest jsObj = new JsonObjectRequest
         //jsObj= Request.Method.GET, "https://api.spotify.com/v1/search?q=tania%20bowra&type=artist"
         final Button button = (Button) v;
-        ( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
+        //( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
+        String type ="";
+        switch(button.getId()){
+            case R.id.button:
+                type = "track";
+                break;
+            case R.id.button2:
+                type = "artist";
+                break;
 
+        }
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://api.spotify.com/v1/search?q="+search+"*&type=track&limit=10" , null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, "https://api.spotify.com/v1/search?q="+search+"*&type="+ type +"&limit="+numResultsToShow , null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // mTxtDisplay.setText("Response: " + response.toString());
+                        // mTxtDisplay.setText("Response: " + response.toString();
                         String[] songId = new String[numResultsToShow];
                         String[] artistnames = new String[numResultsToShow];
                         String[] songName = new String[numResultsToShow];
-                        try {
-                            for (int i=0; i<10; i++) {
-                                //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                                songId[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("id");
-                                artistnames[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-                                songName[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("name");
-                            }
+                        String type ="";
+                        switch(button.getId()){
+                            case R.id.button:
+                                type = "track";
+                                try {
+                                    for (int i=0; i<10; i++) {
+                                        //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                                        songId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        artistnames[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+                                        songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
+                                    }
 
-                        } catch (JSONException e) {}
+                                } catch (JSONException e) {}
+                                break;
+                            case R.id.button2:
+                                type = "artist";
+                                try {
+                                    for (int i=0; i<10; i++) {
+                                        //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                                        //songId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        artistnames[i] = response.getJSONObject(type + "s").getJSONArray("items").getJSONObject(i).getString("name");
+                                        //songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
+                                    }
+
+                                } catch (JSONException e) {}
+                                break;
+
+
+                        }
+
                         //button1 = (Button) findViewById(R.id.button1);
 
                                 //Creating the instance of PopupMenu
@@ -162,9 +194,14 @@ public class SpotifyActivity extends AppCompatActivity implements
                                         .inflate(R.menu.popup_menu, popup.getMenu());
 
                         for (int i = 0; i<numResultsToShow; i++) {
-                                    popup.getMenu().add("Artist: "+ artistnames[i]+ "\n" + "Song: " + songName[i]);
-                                    //popup.getMenu().getItem(i).setTitle(artistnames[i]);
+                                if (button.getId() == R.id.button) {
+                                popup.getMenu().add("Artist: " + artistnames[i] + "\n" + "Song: " + songName[i]);
+                                //popup.getMenu().getItem(i).setTitle(artistnames[i]);
                                 }
+                                else {
+                                    popup.getMenu().add("Artist: " + artistnames[i]);
+                                }
+                            }
                                 //registering popup with OnMenuItemClickListener
                                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                     public boolean onMenuItemClick(MenuItem item) {
