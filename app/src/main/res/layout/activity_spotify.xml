@@ -125,5 +125,6 @@
         android:layout_alignStart="@+id/next"
         android:onClick="searchButtonClick" />
 
+
 </RelativeLayout>
 
