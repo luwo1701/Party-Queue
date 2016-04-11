@@ -103,4 +103,28 @@
         android:layout_alignLeft="@+id/mpv"
         android:layout_marginTop="50dp"/>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchText"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/previous"
+        android:layout_alignEnd="@+id/previous"
+        android:hint="search"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="search"
+        android:id="@+id/button"
+        android:layout_alignBottom="@+id/searchText"
+        android:layout_alignLeft="@+id/next"
+        android:layout_alignStart="@+id/next"
+        android:onClick="searchButtonClick" />
+
+
 </RelativeLayout>
+
