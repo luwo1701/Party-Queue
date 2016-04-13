@@ -2,6 +2,8 @@ package party_queue.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountRequest;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountResponse;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.*;
+import com.spotify.sdk.android.player.PlayerStateCallback;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -37,6 +45,10 @@ import butterknife.ButterKnife;
 import co.mobiwise.playerview.MusicPlayerView;
 import com.android.volley.toolbox.*;
 import com.android.volley.*;
+import com.appspot.party_queue_1243.party_queue.*;
+//import com.google.api.client.json.gson;
+
+import java.io.IOException;
 
 
 public class SpotifyActivity extends AppCompatActivity implements
@@ -90,13 +102,15 @@ public class SpotifyActivity extends AppCompatActivity implements
                 } else {
                     mpv.start();
                     if (playstart) mPlayer.resume();
-                    else {mPlayer.play("spotify:track:"+trackID); playstart = true;}
+                    else {playFirstTrack(); playstart = true;} //mPlayer.play("1zHlj4dQ8ZAtrayhuDDmkY"); playstart = true;}
                 }
             }
         });
         final TextView artistView = (TextView) findViewById(R.id.textViewSinger);
         final TextView songView = (TextView) findViewById(R.id.textViewSong);
         String trackname = "breakdown";
+        playTrack();
+
 
     }
 
@@ -133,7 +147,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         //JsonObjectRequest jsObj = new JsonObjectRequest
         //jsObj= Request.Method.GET, "https://api.spotify.com/v1/search?q=tania%20bowra&type=artist"
         final Button button = (Button) v;
-        ( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
+        //( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://api.spotify.com/v1/search?q="+search+"*&type=track&limit=10" , null, new Response.Listener<JSONObject>() {
@@ -162,22 +176,22 @@ public class SpotifyActivity extends AppCompatActivity implements
                                         .inflate(R.menu.popup_menu, popup.getMenu());
 
                         for (int i = 0; i<numResultsToShow; i++) {
-                                    popup.getMenu().add("Artist: "+ artistnames[i]+ "\n" + "Song: " + songName[i]);
-                                    //popup.getMenu().getItem(i).setTitle(artistnames[i]);
-                                }
-                                //registering popup with OnMenuItemClickListener
-                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        Toast.makeText(
-                                                SpotifyActivity.this,
-                                                item.getTitle() + " added to queue",
-                                                Toast.LENGTH_SHORT
-                                        ).show();
-                                        return true;
-                                    }
-                                });
+                            popup.getMenu().add("Artist: " + artistnames[i] + "\n" + "Song: " + songName[i]);
+                            //popup.getMenu().getItem(i).setTitle(artistnames[i]);
+                        }
+                        //registering popup with OnMenuItemClickListener
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                Toast.makeText(
+                                        SpotifyActivity.this,
+                                        item.getTitle() + " added to queue",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                                return true;
+                            }
+                        });
 
-                                popup.show(); //showing popup menu
+                        popup.show(); //showing popup menu
                         //if (!img.isEmpty()) mpv.setCoverURL(img);
                         //else mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
                         //if (!artist.isEmpty()) artistView.setText(artist);
@@ -199,6 +213,49 @@ public class SpotifyActivity extends AppCompatActivity implements
                     }
                 });
         queue.add(jsObjRequest);
+
+    }
+
+    public void playFirstTrack(){
+        mPlayer.play(trackID);
+    }
+
+    public void playTrack() {
+        Log.d("SpotifyActivity", "playtrack");
+
+
+        PartyQueue.Builder builder = new PartyQueue.Builder(
+                AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
+        PartyQueue service = builder.build();
+        PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
+        loginInfo.setEmail("test@gmail.com");
+        loginInfo.setUsername("daniel");
+
+        try {
+            PartyQueue.Partyqueue.Login r  = service.partyqueue().login(loginInfo);
+            r.getId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        service.partyqueue().
+
+            /*mPlayer.getPlayerState(new PlayerStateCallback() {
+                                       @Override
+                                       public void onPlayerState(PlayerState state) {
+                                           Log.d("SpotifyActivity", Boolean.toString(state.playing));
+                                           int timeLeft = 10;
+                                           while (timeLeft > 9) {
+                                               timeLeft = state.durationInMs - state.positionInMs;
+                                           }
+                                           Log.d("SpotifyActivity", "There's "+Integer.toString(timeLeft)+" ms left.");
+
+                                       }
+                                   }
+            );*/
+
 
     }
 
