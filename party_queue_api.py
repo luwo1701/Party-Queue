@@ -14,6 +14,8 @@ from party_queue_api_messages import PlaylistResponse
 from party_queue_api_messages import MultiplePlaylistResponse
 from party_queue_api_messages import AddSongRequest
 from party_queue_api_messages import SongMessage
+from party_queue_api_messages import VoteSongRequest
+from party_queue_api_messages import VoteSongResponse
 
 # TODO: Add authorized clients
 package = 'party-queue'
@@ -30,7 +32,8 @@ class PartyQueueApi(remote.Service):
                                         name=pl.name,
                                         songs=[])
             for song in pl.songs:
-                playlist.songs.append(SongMessage(spotify_id=song.spotify_id,
+                playlist.songs.append(SongMessage(id=song.key.id(),
+                                                  spotify_id=song.spotify_id,
                                                   name=song.name,
                                                   vote_count=song.vote_count))
 
@@ -96,8 +99,22 @@ class PartyQueueApi(remote.Service):
             http_method='POST',
             name='party-queue.add_song')
     def add_song_to_playlist(self, request):
-        pl = Playlist.add_song(request)
-        return PlaylistResponse(pid=pl.key.id(),
-                                name=pl.name)
+        song = Playlist.add_song(request)
+        return PlaylistResponse(song_id=song.key.id())
+
+    @endpoints.method(VoteSongRequest, VoteSongResponse,
+            http_method='POST',
+            name='party-queue.upvote')
+    def upvote_song(self, request):
+        Song.upvote(request.id)
+        return UpvoteSongResponse(id=request.id)
+ 
+    @endpoints.method(VoteSongRequest, VoteSongResponse,
+            http_method='POST',
+            name='party-queue.downvote')
+    def downvote_song(self, request):
+        Song.downvote(request.id)
+        return UpvoteSongResponse(id=request.id)
         
+       
 APPLICATION = endpoints.api_server([PartyQueueApi])
