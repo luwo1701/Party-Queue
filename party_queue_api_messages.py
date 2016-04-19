@@ -20,7 +20,7 @@ class PlaylistRequest(messages.Message):
     firstsong = messages.StringField(4)
 
 class SongMessage(messages.Message):
-    id = messages.StringField(1)
+    id = messages.IntegerField(1)
     spotify_id = messages.StringField(2)
     name = messages.StringField(3)
     vote_count = messages.IntegerField(4)

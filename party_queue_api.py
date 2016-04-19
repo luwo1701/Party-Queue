@@ -31,7 +31,8 @@ class PartyQueueApi(remote.Service):
             playlist = PlaylistResponse(pid=pl.key.id(),
                                         name=pl.name,
                                         songs=[])
-            for song in pl.songs:
+            songs = Song.find_by_playlist(pl.key).fetch()
+            for song in songs:
                 playlist.songs.append(SongMessage(id=song.key.id(),
                                                   spotify_id=song.spotify_id,
                                                   name=song.name,
@@ -82,9 +83,16 @@ class PartyQueueApi(remote.Service):
     def get_playlist_by_id(self, request):
         """ Returns a playlist based on the plalist id """
         pl = Playlist.find_by_id(request.pid)
-        return PlaylistResponse(pid=pl.key.id(),
-                                name=pl.name,
-                                songs=pl.songs)
+        response = PlaylistResponse(pid=pl.key.id(),
+                                        name=pl.name,
+                                        songs=[])
+        songs = Song.find_by_playlist(pl.key).fetch()
+        for song in songs:
+            response.songs.append(SongMessage(id=song.key.id(),
+                                                  spotify_id=song.spotify_id,
+                                                  name=song.name,
+                                                  vote_count=song.vote_count))
+        return response
 
     @endpoints.method(PlaylistRequest, MultiplePlaylistResponse,
             http_method='GET',
@@ -92,6 +100,15 @@ class PartyQueueApi(remote.Service):
     def get_playlists_for_user(self, request):
         """ Gets all playlists and songs in each playlist for a user's id """ 
         user = Account.find_by_id(request.userid)
+        playlists = Playlist.find_by_owner(user.key).fetch(20)
+        return self.build_playlist_response(playlists)
+
+    @endpoints.method(AccountRequest, MultiplePlaylistResponse,
+            http_method='GET',
+            name='party-queue.get_playlists_for_user_by_name')
+    def get_playlists_for_user_by_name(self, request):
+        """ Gets all playlists and songs in each playlist for a user's id """ 
+        user = Account.find_by_username(request.username)
         playlists = Playlist.find_by_owner(user.key).fetch(20)
         return self.build_playlist_response(playlists)
 
@@ -107,14 +124,14 @@ class PartyQueueApi(remote.Service):
             name='party-queue.upvote')
     def upvote_song(self, request):
         Song.upvote(request.id)
-        return UpvoteSongResponse(id=request.id)
+        return VoteSongResponse(id=request.id)
  
     @endpoints.method(VoteSongRequest, VoteSongResponse,
             http_method='POST',
             name='party-queue.downvote')
     def downvote_song(self, request):
         Song.downvote(request.id)
-        return UpvoteSongResponse(id=request.id)
+        return VoteSongResponse(id=request.id)
         
        
 APPLICATION = endpoints.api_server([PartyQueueApi])
