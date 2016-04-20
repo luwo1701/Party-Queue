@@ -156,6 +156,8 @@ public class SpotifyActivity extends AppCompatActivity implements
                         final String[] songId = new String[numResultsToShow];
                         final String[] artistnames = new String[numResultsToShow];
                         final String[] songName = new String[numResultsToShow];
+                        final String[] artistId = new String[numResultsToShow];
+
                         String type ="";
                         switch(button.getId()){
                             case R.id.button:
@@ -175,7 +177,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                                 try {
                                     for (int i=0; i<10; i++) {
                                         //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                                        songId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        artistId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
                                         artistnames[i] = response.getJSONObject(type + "s").getJSONArray("items").getJSONObject(i).getString("name");
                                         //songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
                                     }
@@ -189,18 +191,18 @@ public class SpotifyActivity extends AppCompatActivity implements
                         //button1 = (Button) findViewById(R.id.button1);
 
                                 //Creating the instance of PopupMenu
-                                PopupMenu popup = new PopupMenu(SpotifyActivity.this, button);
+                               final PopupMenu popup = new PopupMenu(SpotifyActivity.this, button);
                                 //Inflating the Popup using xml file
                                 popup.getMenuInflater()
                                         .inflate(R.menu.popup_menu, popup.getMenu());
 
                         for (int i = 0; i<numResultsToShow; i++) {
                                 if (button.getId() == R.id.button) {
-                                popup.getMenu().add("Artist: " + artistnames[i] + "\n" + "Song: " + songName[i]);
-                                //popup.getMenu().getItem(i).setTitle(artistnames[i]);
+                                //popup.getMenu().add("Artist: " + artistnames[i] + "\n" + "Song: " + songName[i]);
+                                popup.getMenu().add(i,i,i,artistnames[i]);
                                 }
                                 else {
-                                    popup.getMenu().add("Artist: " + artistnames[i]);
+                                    popup.getMenu().add(i,i,i,"Artist: " + artistnames[i]);
                                 }
                             }
                                 //registering popup with OnMenuItemClickListener
@@ -211,14 +213,15 @@ public class SpotifyActivity extends AppCompatActivity implements
                                             title = songName[0];
                                             Toast.makeText(
                                                     SpotifyActivity.this,
-                                                    "fuckit" + " added to queue",
+                                                    //gets track name and prints it to page and alerts user
+                                                    item.getTitle().toString() + " added to queue" +"item number is "+songId[item.getItemId()],
                                                     Toast.LENGTH_SHORT
                                             ).show();
                                         }
                                         //if song, add to q and set title = songname
                                         else {
 
-                                            String id =  "43ZHCT0cAZBISjO8DG9PnE";
+                                            String id =  artistId[item.getItemId()];
                                             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                                                     (Request.Method.GET, "https://api.spotify.com/v1/artists/"+id+"/top-tracks?country=US" , null, new Response.Listener<JSONObject>() {
 
@@ -250,9 +253,9 @@ public class SpotifyActivity extends AppCompatActivity implements
 
                                                             for (int i = 0; i<numResultsToShow; i++) {
 
-                                                                    popup2.getMenu().add("Song: " + songNames[i]);
+                                                                    popup2.getMenu().add(i,i,i,"Song: " + songNames[i]);
                                                             }
-                                                            popup2.show(); //showing popup menu
+                                                            popup2.show(); //showing new popup menu
 
 
 
