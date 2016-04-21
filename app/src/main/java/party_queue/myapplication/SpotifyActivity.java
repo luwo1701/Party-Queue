@@ -22,7 +22,9 @@ import android.util.Log;
 import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountRequest;
 import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountResponse;
 import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.JsonFactory;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.gson.*;
 import com.google.api.client.json.jackson2.*;
 import com.spotify.sdk.android.player.PlayerStateCallback;
 import com.spotify.sdk.android.player.Spotify;
@@ -72,6 +74,9 @@ public class SpotifyActivity extends AppCompatActivity implements
     RequestQueue queue;
     Integer numResultsToShow = new Integer(10);
 
+    PartyQueue.Builder builder;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +94,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
         queue = Volley.newRequestQueue(this);
 
+        //playTrack();
 
 
         //mpv.setCoverURL("https://upload.wikimedia.org/wikipedia/en/b/b3/MichaelsNumberOnes.JPG");
@@ -217,7 +223,7 @@ public class SpotifyActivity extends AppCompatActivity implements
     }
 
     public void playFirstTrack(){
-        mPlayer.play(trackID);
+        mPlayer.play("spotify:track:"+trackID);
     }
 
     public void playTrack() {
@@ -225,37 +231,36 @@ public class SpotifyActivity extends AppCompatActivity implements
 
 
         PartyQueue.Builder builder = new PartyQueue.Builder(
-                AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
+                AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+        builder.setApplicationName("party_queue_1243");
+
+
+
         PartyQueue service = builder.build();
         PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
         loginInfo.setEmail("test@gmail.com");
         loginInfo.setUsername("daniel");
 
+        /*PartyQueueApiMessagesAccountResponse r;
         try {
-            PartyQueue.Partyqueue.Login r  = service.partyqueue().login(loginInfo);
-            r.getId();
+            r = service.partyqueue().signup(loginInfo).execute();
+            Log.d("SptifyActivity", "ID = " + r.getId());
+            Log.d("SptifyActivity", "Username = " + r.getUsername());
+            Log.d("SptifyActivity", "Email = " + r.getEmail());
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        /*Thread t = new Thread( new myrunnable(service, loginInfo));
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
 
-
-        service.partyqueue().
-
-            /*mPlayer.getPlayerState(new PlayerStateCallback() {
-                                       @Override
-                                       public void onPlayerState(PlayerState state) {
-                                           Log.d("SpotifyActivity", Boolean.toString(state.playing));
-                                           int timeLeft = 10;
-                                           while (timeLeft > 9) {
-                                               timeLeft = state.durationInMs - state.positionInMs;
-                                           }
-                                           Log.d("SpotifyActivity", "There's "+Integer.toString(timeLeft)+" ms left.");
-
-                                       }
-                                   }
-            );*/
-
+        Log.d("SpotifyActivity", "playtrack end");
 
     }
 
@@ -309,5 +314,29 @@ public class SpotifyActivity extends AppCompatActivity implements
         // VERY IMPORTANT! This must always be called or else you will leak resources
         Spotify.destroyPlayer(this);
         super.onDestroy();
+    }
+
+
+
+    class myrunnable implements Runnable {
+        PartyQueue service;
+        PartyQueueApiMessagesAccountRequest loginInfo;
+
+        public myrunnable(PartyQueue s, PartyQueueApiMessagesAccountRequest l) {
+            service = s;
+            loginInfo = l;
+        }
+
+        public void run () {
+            PartyQueueApiMessagesAccountResponse r;
+            try {
+                r = service.partyqueue().signup(loginInfo).execute();
+                Log.d("SptifyActivity", "ID = " + r.getId());
+                Log.d("SptifyActivity", "Username = " + r.getUsername());
+                Log.d("SptifyActivity", "Email = " + r.getEmail());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

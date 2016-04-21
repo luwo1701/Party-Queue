@@ -13,6 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appspot.party_queue_1243.party_queue.PartyQueue;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountRequest;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.json.gson.GsonFactory;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
@@ -20,13 +25,15 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
+    Long USER_ID;
+
     @Bind(R.id.input_email)
     EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login)
     Button _loginButton;
     @Bind(R.id.link_signup)
-    TextView _signupLink;
+    Button _signupLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
@@ -79,6 +86,18 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
+
+                        /*PartyQueue.Builder builder = new PartyQueue.Builder(
+                                AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+                        builder.setApplicationName("party_queue_1243");
+
+
+
+                        PartyQueue service = builder.build();
+                        PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
+                        loginInfo.setEmail(email);
+                        loginInfo.setUsername();
+*/
                         onLoginSuccess();
                         // onLoginFailed();
                         progressDialog.dismiss();
@@ -91,10 +110,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
+                Log.d("LoginActivity", "OnActivityResult");
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    USER_ID = extras.getLong("USER_ID");
+                }
+
+                Log.d("LoginActivity", "Signup Returned user id = "+USER_ID);
+                onLoginSuccess();
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
-                this.finish();
+                //this.finish();
             }
         }
     }
@@ -109,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, SpotifyActivity.class);
+        intent.putExtra("USER_ID", USER_ID);
         startActivity(intent);
         finish();
     }
