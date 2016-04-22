@@ -106,8 +106,10 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
             if (v.getId() == upvote.getId()){
                 int list_index = v.getId();
                 Toast.makeText(v.getContext(), "upvoted  " + title.getText().toString(), Toast.LENGTH_SHORT).show();
+
                 String uri = song_uri.getText().toString(); //TODO:use song uri to talk to the backend and update queue
                 list.add(new Data("new song!", R.drawable.icon_like, "new song uri is invisible"));
+
                 Recycler_View_Adapter.this.notifyDataSetChanged();
 
 
