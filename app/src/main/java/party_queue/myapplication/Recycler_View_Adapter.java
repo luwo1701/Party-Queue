@@ -1,21 +1,24 @@
 package party_queue.myapplication;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by busun on 4/20/16.
- */
+
 public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
 
     List<Data> list = Collections.emptyList();
     Context context;
+
 
     public Recycler_View_Adapter(List<Data> list, Context context) {
         this.list = list;
@@ -26,7 +29,7 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
     public View_Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout, parent, false);
-        View_Holder holder = new View_Holder(v);
+        View_Holder holder = new View_Holder(v, list, context);
         return holder;
 
     }
@@ -37,8 +40,8 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
         //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
         holder.title.setText(list.get(position).title);
         holder.imageView.setImageResource(list.get(position).imageId);
+        holder.song_uri.setText(list.get(position).uri);
 
-        //animate(holder);
 
     }
 

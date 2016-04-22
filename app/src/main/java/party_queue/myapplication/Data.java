@@ -6,10 +6,12 @@ package party_queue.myapplication;
 public class Data {
     public String title;
     public int imageId;
+    public String uri;
 
-    Data(String title, int imageId) {
+    Data(String title, int imageId, String uri) {
         this.title = title;
         this.imageId = imageId;
+        this.uri = uri;
     }
 
 }
