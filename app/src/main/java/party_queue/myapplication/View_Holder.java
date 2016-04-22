@@ -1,4 +1,4 @@
-package party_queue.myapplication;
+/*package party_queue.myapplication;
 
 import android.content.Context;
 import android.support.annotation.UiThread;
@@ -16,9 +16,7 @@ import java.util.Queue;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Created by busun on 4/20/16.
- */
+
 public class View_Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     CardView cv;
@@ -67,3 +65,4 @@ public class View_Holder extends RecyclerView.ViewHolder implements View.OnClick
     }
 
 }
+*/

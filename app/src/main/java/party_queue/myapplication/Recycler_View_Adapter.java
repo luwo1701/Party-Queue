@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
+public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Adapter.ViewHolder> {
 
     List<Data> list = Collections.emptyList();
     Context context;
@@ -26,16 +26,16 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
     }
 
     @Override
-    public View_Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout, parent, false);
-        View_Holder holder = new View_Holder(v, list, context);
+        ViewHolder holder = new ViewHolder(v, list, context);
         return holder;
 
     }
 
     @Override
-    public void onBindViewHolder(View_Holder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
         holder.title.setText(list.get(position).title);
@@ -67,6 +67,57 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder> {
         int position = list.indexOf(data);
         list.remove(position);
         notifyItemRemoved(position);
+    }
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        CardView cv;
+        TextView title;
+        ImageView imageView;
+        View upvote;
+        View downvote;
+        TextView song_uri;
+        Context context;
+        List<Data> list;
+
+        public ViewHolder(View itemView, List<Data> list, Context context) {
+
+            super(itemView);
+
+            this.context = context;
+            this.list = list;
+
+            cv = (CardView) itemView.findViewById(R.id.cardView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            upvote = itemView.findViewById(R.id.upvote);
+            downvote = itemView.findViewById(R.id.downvote);
+            song_uri = (TextView) itemView.findViewById(R.id.song_uri);
+
+            upvote.setOnClickListener(this);
+            downvote.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v){
+            if (v.getId() == upvote.getId()){
+                int list_index = v.getId();
+                Toast.makeText(v.getContext(), "upvoted  " + title.getText().toString(), Toast.LENGTH_SHORT).show();
+                String uri = song_uri.getText().toString(); //TODO:use song uri to talk to the backend and update queue
+                list.add(new Data("new song!", R.drawable.icon_like, "new song uri is invisible"));
+                Recycler_View_Adapter.this.notifyDataSetChanged();
+
+
+
+            } else  if (v.getId() == downvote.getId()){
+                Toast.makeText(v.getContext(), "downvoted " + title.getText().toString(), Toast.LENGTH_SHORT).show();
+                String uri = song_uri.getText().toString(); //TODO: use song uri to talk to the backend
+            }
+        }
+
     }
 
 }
