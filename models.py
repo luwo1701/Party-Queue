@@ -10,14 +10,23 @@ class Song(ndb.Model):
     spotify_id = ndb.StringProperty(required=True)
     name = ndb.StringProperty(required=True)
     vote_count = ndb.IntegerProperty()
+    owner = ndb.KeyProperty(required=True)
 
-    def upvote(self):
-        self.vote_count = self.vote_count + 1
-        self.put()
+    @classmethod
+    def find_by_playlist(cls, playlistKey):
+        return cls.query(cls.owner == playlistKey).order(-cls.vote_count)
 
-    def downvote(cls, name):
-        self.vote_count = self.vote_count - 1
-        self.put()
+    @classmethod
+    def upvote(cls, id):
+        song = cls.get_by_id(id)
+        song.vote_count = song.vote_count + 1
+        song.put()
+
+    @classmethod
+    def downvote(cls, id):
+        song = cls.get_by_id(id)
+        song.vote_count = song.vote_count - 1
+        song.put()
 
 """ CLASS CONTAINING PLAYLISTS"""
 class Playlist(ndb.Model):
@@ -46,30 +55,14 @@ class Playlist(ndb.Model):
     @classmethod
     def add_song(cls, request):
         pl = cls.find_by_id(request.pid)
-        pl.songs.append(Song(spotify_id=request.spotify_id,
+        new_song = Song(spotify_id=request.spotify_id,
                              name=request.name,
-                             vote_count=0))
-        pl.put()
-        return pl
-
-"""
-    @classmethod
-    def upvote(cls, request):
-        pl = cls.find_by_id(request.pid)
-        index = [Song.spotify_id for y in pl.songs].index(request.spotify_id)
-        pl.songs[index].upvote()
-        pl.put()
-
-    @classmethod
-    def upvote(cls, request):
-        pl = cls.find_by_id(request.pid)
-        song = filter(lambda Song: Song.spotify_id==request.spotify_id, pl.songs)
-        if len(song) is not 1:
-            print "More than one song with unique spotify id"
-        #song[0].downvote()
-        pl.put()
-        """
-
+                             owner = pl.key,
+                             vote_count=0)
+        new_song.put()
+        pl.songs.append(new_song)        
+        pl.put()  
+        return new_song
 
 """
     @classmethod
@@ -114,6 +107,3 @@ class Account(ndb.Model):
             new_user.put()
             return new_user
         return None
-
-
-

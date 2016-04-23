@@ -65,8 +65,8 @@ class TestModelsTestCase(unittest.TestCase):
         except BadValueError:
             pass
 
-        Song(spotify_id='sldkjfldkjflkd', name='songname').put()
-        self.assertEqual(1, len(Song.query().fetch(2)))
+#        Song(spotify_id='sldkjfldkjflkd', name='songname').put()
+#        self.assertEqual(1, len(Song.query().fetch(2)))
 
     def test_Playlist_initialization(self):
         owner=Account(username='Mr. Magoo', email='mm123@gmail.com').put()
@@ -170,23 +170,32 @@ class TestModelsTestCase(unittest.TestCase):
         self.assertEqual('Space Oddity', pl_sorted[0].songs[0].name)
         self.assertEqual(0, pl_sorted[0].songs[0].vote_count)
 
-# TODO: Implement testing of up/downvote, and upvote of song on playlist
-"""
         # Upvote a song
         new_request = PlaylistRequest(pl_sorted[0].key.id(),
                                   'asdlfjsadlfkj',
                                   'What A Wonderful World')
         Playlist.add_song(new_request)
 
-        Playlist.upvote(new_request)
-        index = [Song.spotify_id for y in pl_sorted[0].songs].index(new_request.spotify_id)
-        self.assertEqual(0, pl_sorted[0].songs[index].vote_count, 
-                pl_sorted[0].songs[1])
-        
-        # Downvote a song
-        """
+        songs = Song.find_by_playlist(pl_sorted[0].key)
+        self.assertEqual(2, len(songs.fetch(4)), 'Failed to find songs by playlist id')
+        song_entity = songs.get()
+        Song.upvote(song_entity.key.id())
+        self.assertEqual(1, song_entity.vote_count, song_entity)
 
+        songs_on_pl = pl_sorted[0].songs
+        self.assertEqual(1, songs_on_pl[0].vote_count, songs_on_pl)
 
+        song_entity = songs.fetch(2)[1]
+        Song.upvote(song_entity.key.id())
+        Song.upvote(song_entity.key.id())
+        songs = Song.find_by_playlist(pl_sorted[0].key).fetch(2)
+        self.assertEqual('What A Wonderful World', songs[0].name, song_entity)
+        self.assertEqual(2, songs[0].vote_count, song_entity)
+
+        # downvote
+        self.assertEqual(2, song_entity.vote_count)
+        Song.downvote(song_entity.key.id())
+        self.assertEqual(1, song_entity.vote_count)
 
 # Main: Run Test Cases
 if __name__ == '__main__':
