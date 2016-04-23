@@ -43,7 +43,8 @@
             android:name=".VoteActivity"
             android:label="@string/title_activity_vote"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".QueueActivity"></activity>
+        <activity android:name=".QueueActivity" />
+        <activity android:name=".MenuActivity"></activity>
     </application>
 
 </manifest>
