@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +41,9 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
 
         //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
         holder.title.setText(list.get(position).title);
-        holder.imageView.setImageResource(list.get(position).imageId);
+
+        Picasso.with(context).load(list.get(position).imageId).into(holder.imageView);
+
         holder.song_uri.setText(list.get(position).uri);
 
 
@@ -108,7 +112,7 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
                 Toast.makeText(v.getContext(), "upvoted  " + title.getText().toString(), Toast.LENGTH_SHORT).show();
 
                 String uri = song_uri.getText().toString(); //TODO:use song uri to talk to the backend and update queue
-                list.add(new Data("new song!", R.drawable.icon_like, "new song uri is invisible"));
+                list.add(new Data("new song!", "http://www.zyekil.com/wp-content/uploads/2015/12/wolf_cover_art-1.jpg", "new song uri is invisible"));
 
                 Recycler_View_Adapter.this.notifyDataSetChanged();
 
