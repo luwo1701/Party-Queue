@@ -2,6 +2,7 @@ package party_queue.myapplication;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,11 +11,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appspot.party_queue_1243.party_queue.PartyQueue;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountRequest;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountResponse;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.json.gson.GsonFactory;
+
+import java.io.IOException;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
+
+    Long USER_ID;
 
     @Bind(R.id.input_name)
     EditText _nameText;
@@ -86,6 +97,11 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.show();
 
 
+        final String name = _nameText.getText().toString();
+        final String email = _emailText.getText().toString();
+        String password = _passwordText.getText().toString();
+
+
         // TODO: Implement your own signup logic here.
 
         new android.os.Handler().postDelayed(
@@ -93,7 +109,28 @@ public class SignupActivity extends AppCompatActivity {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
-                        onSignupSuccess();
+                        PartyQueue.Builder builder = new PartyQueue.Builder(
+                                AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+                        builder.setApplicationName("party_queue_1243");
+
+
+
+                        PartyQueue service = builder.build();
+                        PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
+                        loginInfo.setEmail(email);
+                        loginInfo.setUsername(name);
+
+                        Thread t = new Thread( new myrunnable(service, loginInfo));
+                        t.start();
+                        try {
+                            t.join();
+                            onSignupSuccess();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            onSignupFailed();
+                        }
+
+
                         // onSignupFailed();
                         progressDialog.dismiss();
                     }
@@ -103,7 +140,9 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
+        Intent resultIntent = new Intent();
+        setResult(RESULT_OK, resultIntent);
+        resultIntent.putExtra("USER_ID", USER_ID);
         finish();
     }
 
@@ -145,5 +184,28 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    class myrunnable implements Runnable {
+        PartyQueue service;
+        PartyQueueApiMessagesAccountRequest loginInfo;
+
+        public myrunnable(PartyQueue s, PartyQueueApiMessagesAccountRequest l) {
+            service = s;
+            loginInfo = l;
+        }
+
+        public void run () {
+            PartyQueueApiMessagesAccountResponse r;
+            try {
+                r = service.partyqueue().signup(loginInfo).execute();
+                USER_ID = r.getId();
+                Log.d("SignupActivity", "ID = " + USER_ID);
+                Log.d("SignupActivity", "Username = " + r.getUsername());
+                Log.d("SignupActivity", "Email = " + r.getEmail());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
