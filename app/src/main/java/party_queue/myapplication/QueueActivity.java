@@ -1,5 +1,6 @@
 package party_queue.myapplication;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +40,7 @@ public class QueueActivity extends AppCompatActivity {
 
     Integer numResultsToShow = new Integer(10);
     Recycler_View_Adapter adapter;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public void fill_with_data() {
         /*Data holds information for songs in the queue*/
@@ -68,60 +70,183 @@ public class QueueActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         queue = Volley.newRequestQueue(this);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshItems();
+            }
+        });
     }
+
+    void refreshItems() {
+        // Load items
+        // ...
+
+        // Load complete
+        onItemsLoadComplete();
+    }
+
+    void onItemsLoadComplete() {
+        // Update the adapter and notify data set changed
+        // ...
+        adapter.notifyDataSetChanged();
+        // Stop refresh animation
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
 
 
 
     public void searchButtonClick(View v)
     {
+
         // do something when search button is clicked
-        String search = _searchText.getText().toString(); //grabs string from _searchText text box defined in activity_spotify.xml
+        String search = _searchText.getText().toString().replaceAll(" ","+"); //grabs string from _searchText text box defined in activity_spotify.xml
+
         //JsonObjectRequest jsObj = new JsonObjectRequest
         //jsObj= Request.Method.GET, "https://api.spotify.com/v1/search?q=tania%20bowra&type=artist"
         final Button button = (Button) v;
-        ( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
+        //( (Button) v).setText(search); // sets the text inside the button to be the text from the text box
+        String type ="";
+        switch(button.getId()){
+            case R.id.button:
+                type = "track";
+                break;
+            case R.id.button2:
+                type = "artist";
+                break;
 
+        }
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://api.spotify.com/v1/search?q="+search+"*&type=track&limit=10" , null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, "https://api.spotify.com/v1/search?q="+search+"*&type="+ type +"&limit="+numResultsToShow , null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // mTxtDisplay.setText("Response: " + response.toString());
-                        String[] songId = new String[numResultsToShow];
-                        String[] artistnames = new String[numResultsToShow];
-                        String[] songName = new String[numResultsToShow];
-                        try {
-                            for (int i=0; i<10; i++) {
-                                //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                                songId[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("id");
-                                artistnames[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-                                songName[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("name");
-                            }
+                        // mTxtDisplay.setText("Response: " + response.toString();
+                        final String[] songId = new String[numResultsToShow];
+                        final String[] artistnames = new String[numResultsToShow];
+                        final String[] songName = new String[numResultsToShow];
+                        final String[] artistId = new String[numResultsToShow];
 
-                        } catch (JSONException e) {}
+                        String type ="";
+                        switch(button.getId()){
+                            case R.id.button:
+                                type = "track";
+                                try {
+                                    for (int i=0; i<10; i++) {
+                                        //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                                        songId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        artistnames[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+                                        songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
+                                    }
+
+                                } catch (JSONException e) {}
+                                break;
+                            case R.id.button2:
+                                type = "artist";
+                                try {
+                                    for (int i=0; i<10; i++) {
+                                        //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                                        artistId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        artistnames[i] = response.getJSONObject(type + "s").getJSONArray("items").getJSONObject(i).getString("name");
+                                        //songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
+                                    }
+
+                                } catch (JSONException e) {}
+                                break;
+
+
+                        }
+
                         //button1 = (Button) findViewById(R.id.button1);
 
                         //Creating the instance of PopupMenu
-                        PopupMenu popup = new PopupMenu(QueueActivity.this, button);
+                        final PopupMenu popup = new PopupMenu(QueueActivity.this, button);
                         //Inflating the Popup using xml file
                         popup.getMenuInflater()
                                 .inflate(R.menu.popup_menu, popup.getMenu());
 
                         for (int i = 0; i<numResultsToShow; i++) {
-                            popup.getMenu().add("Artist: "+ artistnames[i]+ "\n" + "Song: " + songName[i]);
-                            //popup.getMenu().getItem(i).setTitle(artistnames[i]);
+                            if (button.getId() == R.id.button) {
+                                //popup.getMenu().add("Artist: " + artistnames[i] + "\n" + "Song: " + songName[i]);
+                                popup.getMenu().add(i,i,i,artistnames[i]);
+                            }
+                            else {
+                                popup.getMenu().add(i,i,i,"Artist: " + artistnames[i]);
+                            }
                         }
                         //registering popup with OnMenuItemClickListener
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                Toast.makeText(
-                                        QueueActivity.this,
-                                        item.getTitle() + " added to queue",
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                final String title;
+                                if (button.getId() == R.id.button) {
+                                    title = songName[0];
+                                    Toast.makeText(
+                                            QueueActivity.this,
+                                            //gets track name and prints it to page and alerts user
+                                            item.getTitle().toString() + " added to queue" +"item number is "+songId[item.getItemId()],
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                                //if song, add to q and set title = songname
+                                else {
 
-                                data.add(new Data(item.getTitle().toString(), "http://www.zyekil.com/wp-content/uploads/2015/12/wolf_cover_art-1.jpg", "new song uri is invisible"));
-                                adapter.notifyDataSetChanged();
+                                    String id =  artistId[item.getItemId()];
+                                    JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                                            (Request.Method.GET, "https://api.spotify.com/v1/artists/"+id+"/top-tracks?country=US" , null, new Response.Listener<JSONObject>() {
+
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+                                                    final String[] songIds = new String[numResultsToShow];
+                                                    final String[] artistname = new String[numResultsToShow];
+                                                    final String[] songNames = new String[numResultsToShow];
+                                                    String type = "";
+                                                    //switch(button.getId()){
+                                                    //  case R.id.button:
+                                                    //type = "track";
+                                                    try {
+                                                        for (int i = 0; i < 10; i++) {
+
+                                                            songNames[i] = response.getJSONArray("tracks").getJSONObject(i).getString("name");
+                                                            Log.d("SpotifyActivity", "songs[" + i +"] = " + songNames[i]);
+                                                            // artistname[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+                                                            //songIds[i] = response.getJSONObject("tracks").getJSONArray("items").getJSONObject(i).getString("name");
+                                                        }
+                                                        //;
+
+                                                    } catch (JSONException e) {}
+                                                    //Creating the instance of PopupMenu
+                                                    PopupMenu popup2 = new PopupMenu(QueueActivity.this, button);
+                                                    //Inflating the Popup using xml file
+                                                    popup2.getMenuInflater()
+                                                            .inflate(R.menu.popup_menu, popup2.getMenu());
+
+                                                    for (int i = 0; i<numResultsToShow; i++) {
+
+                                                        popup2.getMenu().add(i,i,i,"Song: " + songNames[i]);
+                                                    }
+                                                    popup2.show(); //showing new popup menu
+
+
+
+
+                                                }
+                                            }, new Response.ErrorListener() {
+
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    // TODO Auto-generated method stub
+                                                    Log.d("SpotifyActivity", "ERRorlistenerdeal2");
+
+                                                }
+                                            });
+                                    queue.add(jsObjRequest);
+                                }
+
                                 return true;
                             }
                         });
@@ -149,9 +274,10 @@ public class QueueActivity extends AppCompatActivity {
                 });
         queue.add(jsObjRequest);
 
-
-
     }
+    /*public interface VolleyCallback{
+        void onSuccess(JSONObject string);
+    }*/
 
 
 

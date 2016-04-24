@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 
 public class MenuActivity extends AppCompatActivity {
 
-    @Bind(R.id.btn_guest)
+    @Bind(R.id.search_button)
     Button _partyguest;
     @Bind(R.id.btn_host)
     Button _partyhost;
@@ -40,14 +40,12 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void host(){
-        _partyhost.setEnabled(true);
         Intent intent = new Intent(this, SpotifyActivity.class);
         startActivity(intent);
         //finish();
     }
 
     public void guest(){
-        _partyguest.setEnabled(true);
         Intent intent = new Intent(this, QueueActivity.class);
         startActivity(intent);
         //finish();

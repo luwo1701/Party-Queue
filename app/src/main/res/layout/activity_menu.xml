@@ -1,39 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
 
-    <LinearLayout
+
+    <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp" />
+    <ImageView
 
-        <android.support.v7.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/logo"
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+
+    <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_host"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-
             android:padding="12dp"
-            android:text="I am a Party Host"/>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_guest"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="I am a Party Guest"/>
+            android:paddingTop="100dp"
+            android:text="I am a Party Host"
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/searchText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
-    </LinearLayout>
-</ScrollView>
+    <EditText
+        android:layout_width="223dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchText"
+        android:textColor="@android:color/white"
+        android:hint="search by username"
+        android:layout_below="@+id/imageView2"
+        android:layout_toLeftOf="@+id/search_button"
+        android:layout_toStartOf="@+id/search_button"
+        android:layout_marginTop="49dp" />
+
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="search"
+        android:id="@+id/search_button"
+        android:onClick="searchButtonClick"
+        android:layout_alignBottom="@+id/searchText"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+
+</RelativeLayout>
