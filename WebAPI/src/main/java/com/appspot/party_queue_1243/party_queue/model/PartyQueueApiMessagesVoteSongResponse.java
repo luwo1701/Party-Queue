@@ -19,7 +19,7 @@
 package com.appspot.party_queue_1243.party_queue.model;
 
 /**
- * Model definition for PartyQueueApiMessagesMultiplePlaylistResponse.
+ * Model definition for PartyQueueApiMessagesVoteSongResponse.
  *
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the party_queue. For a detailed explanation see:
@@ -29,37 +29,37 @@ package com.appspot.party_queue_1243.party_queue.model;
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class PartyQueueApiMessagesMultiplePlaylistResponse extends com.google.api.client.json.GenericJson {
+public final class PartyQueueApiMessagesVoteSongResponse extends com.google.api.client.json.GenericJson {
 
   /**
    * The value may be {@code null}.
    */
-  @com.google.api.client.util.Key
-  private java.util.List<PartyQueueApiMessagesPlaylistResponse> playlists;
+  @com.google.api.client.util.Key @com.google.api.client.json.JsonString
+  private java.lang.Long id;
 
   /**
    * @return value or {@code null} for none
    */
-  public java.util.List<PartyQueueApiMessagesPlaylistResponse> getPlaylists() {
-    return playlists;
+  public java.lang.Long getId() {
+    return id;
   }
 
   /**
-   * @param playlists playlists or {@code null} for none
+   * @param id id or {@code null} for none
    */
-  public PartyQueueApiMessagesMultiplePlaylistResponse setPlaylists(java.util.List<PartyQueueApiMessagesPlaylistResponse> playlists) {
-    this.playlists = playlists;
+  public PartyQueueApiMessagesVoteSongResponse setId(java.lang.Long id) {
+    this.id = id;
     return this;
   }
 
   @Override
-  public PartyQueueApiMessagesMultiplePlaylistResponse set(String fieldName, Object value) {
-    return (PartyQueueApiMessagesMultiplePlaylistResponse) super.set(fieldName, value);
+  public PartyQueueApiMessagesVoteSongResponse set(String fieldName, Object value) {
+    return (PartyQueueApiMessagesVoteSongResponse) super.set(fieldName, value);
   }
 
   @Override
-  public PartyQueueApiMessagesMultiplePlaylistResponse clone() {
-    return (PartyQueueApiMessagesMultiplePlaylistResponse) super.clone();
+  public PartyQueueApiMessagesVoteSongResponse clone() {
+    return (PartyQueueApiMessagesVoteSongResponse) super.clone();
   }
 
 }

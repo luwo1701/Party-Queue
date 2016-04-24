@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import com.appspot.party_queue_1243.party_queue.PartyQueue;
 import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountRequest;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAccountResponse;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.gson.GsonFactory;
+
+import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -40,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        USER_ID = 0L;
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -79,15 +83,29 @@ public class LoginActivity extends AppCompatActivity {
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
 
+        PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
+        loginInfo.setEmail(email);
+        loginInfo.setUsername(password);
+        PartyQueue.Builder builder = new PartyQueue.Builder(
+                                AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+        builder.setApplicationName("party_queue_1243");
+        PartyQueue service = builder.build();
+
         // TODO: Implement your own authentication logic here.
+        Thread t = new Thread(new myrunnable(service, loginInfo));
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e){}
 
-
-        new android.os.Handler().postDelayed(
+        if (USER_ID == null || USER_ID == 0L) onLoginFailed();
+        else onLoginSuccess();
+        /*new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
 
-                        /*PartyQueue.Builder builder = new PartyQueue.Builder(
+                        *//*PartyQueue.Builder builder = new PartyQueue.Builder(
                                 AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
                         builder.setApplicationName("party_queue_1243");
 
@@ -97,12 +115,12 @@ public class LoginActivity extends AppCompatActivity {
                         PartyQueueApiMessagesAccountRequest loginInfo = new PartyQueueApiMessagesAccountRequest();
                         loginInfo.setEmail(email);
                         loginInfo.setUsername();
-*/
-                        onLoginSuccess();
+*//*
+                        //onLoginSuccess();
                         // onLoginFailed();
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 3000);*/
     }
 
 
@@ -168,5 +186,28 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    class myrunnable implements Runnable {
+        PartyQueue service;
+        PartyQueueApiMessagesAccountRequest loginInfo;
+
+        public myrunnable(PartyQueue s, PartyQueueApiMessagesAccountRequest l) {
+            service = s;
+            loginInfo = l;
+        }
+
+        public void run () {
+            PartyQueueApiMessagesAccountResponse r;
+            try {
+                r = service.partyqueue().login(loginInfo).execute();
+                USER_ID = r.getId();
+                Log.d("SignupActivity", "ID = " + USER_ID);
+                Log.d("SignupActivity", "Username = " + r.getUsername());
+                Log.d("SignupActivity", "Email = " + r.getEmail());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
