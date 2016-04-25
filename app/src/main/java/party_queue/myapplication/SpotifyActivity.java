@@ -66,7 +66,9 @@ import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+/**
+ * Activity that holds the music player. Designed for the party host. Songs can also be added from this activity.
+ */
 public class SpotifyActivity extends AppCompatActivity implements
         PlayerNotificationCallback, ConnectionStateCallback {
     @Bind(R.id.searchText)
@@ -400,7 +402,9 @@ public class SpotifyActivity extends AppCompatActivity implements
         void onSuccess(JSONObject string);
     }*/
 
-
+    /**
+     * Send request to the spotify API using the track ID to load data for song streaming.
+     */
     public void loadTrackData() {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+currentTrackID, null, new Response.Listener<JSONObject>() {
@@ -438,6 +442,10 @@ public class SpotifyActivity extends AppCompatActivity implements
         queue.add(jsObjRequest);
     }
 
+    /**
+     * Play the first song in the queue if it is not null.
+     * @return true if a song exists, false if it is null
+     */
     public boolean playFirstTrack() {
         Log.d("SpotifyActivity", "playfirsttrack");
         if (mpv.isRotating()) mpv.stop();
@@ -452,41 +460,69 @@ public class SpotifyActivity extends AppCompatActivity implements
         return false;
     }
 
+    /**
+     * pause the player
+     */
     void pause() {
         mpv.stop();
         mPlayer.pause();
     }
 
+    /**
+     * resume the player
+     */
     void resume() {
         mpv.start();
         mPlayer.resume();
     }
 
+    /**
+     * Spotify succesfully logged in user.
+     */
     @Override
     public void onLoggedIn() {
         Log.d("SpotifyActivity", "User logged in");
     }
 
+    /**
+     * Spotify logged out user.
+     */
     @Override
     public void onLoggedOut() {
         Log.d("SpotifyActivity", "User logged out");
     }
 
+    /**
+     * Spotify failed to log the user in.
+     * @param error error received during attempted login
+     */
     @Override
     public void onLoginFailed(Throwable error) {
         Log.d("SpotifyActivity", "Login failed");
     }
 
+    /**
+     * A temporary error occurred with Spotify.
+     */
     @Override
     public void onTemporaryError() {
         Log.d("SpotifyActivity", "Temporary error occurred");
     }
 
+    /**
+     * A connection message was received from Spotify.
+     * @param message the message from Spotify
+     */
     @Override
     public void onConnectionMessage(String message) {
         Log.d("SpotifyActivity", "Received connection message: " + message);
     }
 
+    /**
+     * Initialize a playback event.
+     * @param eventType identifies the type of event
+     * @param playerState identifies the previous state of the player
+     */
     @Override
     public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
         Log.d("SpotifyActivity", "Playback event received: " + eventType.name());
@@ -512,6 +548,11 @@ public class SpotifyActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Handle errors received during playback.
+     * @param errorType the type of error
+     * @param errorDetails a string with details about the error
+     */
     @Override
     public void onPlaybackError(ErrorType errorType, String errorDetails) {
         Log.d("SpotifyActivity", "Playback error received: " + errorType.name());
@@ -522,6 +563,9 @@ public class SpotifyActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * if the player has been stopped, try to join the thread
+     */
     @Override
     protected void onStop() {
         done = true;
@@ -595,11 +639,20 @@ public class SpotifyActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * runnable to add a new song to the queue
+     */
     class addSongRunnable implements Runnable {
         PartyQueue service;
         String tID;
         String name;
 
+        /**
+         * Add a song runnable.
+         * @param s the backend service
+         * @param id the id of the song
+         * @param n the name of the song
+         */
         public addSongRunnable(PartyQueue s, String id, String n) {
             service = s;
             tID = id;

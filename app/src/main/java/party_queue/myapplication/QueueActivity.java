@@ -33,6 +33,10 @@ import java.util.Queue;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
+/**
+ * Implements the queue.
+ */
+
 public class QueueActivity extends AppCompatActivity {
 
 
@@ -117,7 +121,9 @@ public class QueueActivity extends AppCompatActivity {
         return service;
     }
 
-
+    /**
+     *Refresh the view by reloading items from the backend.
+     */
     void refreshItems() {
         // Load items
         // ...
@@ -132,6 +138,9 @@ public class QueueActivity extends AppCompatActivity {
         onItemsLoadComplete();
     }
 
+    /**
+     * Notify frontend that changes have been completed and reload layout.
+     */
     void onItemsLoadComplete() {
         // Update the adapter and notify data set changed
         // ...
@@ -142,8 +151,10 @@ public class QueueActivity extends AppCompatActivity {
     }
 
 
-
-
+    /**
+     * Listens for clicks on the search by user button.
+     * @param v the current view in the activity
+     */
     public void searchButtonClick(View v)
     {
         Log.d("MenuActivity", "SearchButtonClick");
@@ -324,7 +335,9 @@ public class QueueActivity extends AppCompatActivity {
         void onSuccess(JSONObject string);
     }*/
 
-
+    /**
+     * Fill the activity with data by connecting to the backend.
+     */
     public class fillData implements Runnable {
         PartyQueue service;
         PartyQueueApiMessagesPlaylistResponse r;
@@ -377,6 +390,9 @@ public class QueueActivity extends AppCompatActivity {
             }
         }
     }
+    /**
+     * Add a song from the backend.
+     */
     class addSongRunnable implements Runnable {
         PartyQueue service;
         String tID;
