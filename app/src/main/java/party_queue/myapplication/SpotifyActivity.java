@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 import android.app.Activity;
@@ -60,6 +61,8 @@ import com.appspot.party_queue_1243.party_queue.*;
 //import com.google.api.client.json.gson;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class SpotifyActivity extends AppCompatActivity implements
@@ -80,8 +83,10 @@ public class SpotifyActivity extends AppCompatActivity implements
     MusicPlayerView mpv;
     String firstTrack = null;
     String currentTrackID;
+    String nextTrackID;
     Long playlistID;
     int currentSongDuration;
+    int playlistSize;
     boolean playstart = false;
     RequestQueue queue;
     Integer numResultsToShow = new Integer(10);
@@ -90,8 +95,10 @@ public class SpotifyActivity extends AppCompatActivity implements
 
     TextView artistView;
     TextView songView;
+    ImageView nextButton;
 
     Long USER_ID;
+    Lock lock;
 
     PartyQueue service;
 
@@ -111,14 +118,43 @@ public class SpotifyActivity extends AppCompatActivity implements
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
         builder.setScopes(new String[]{"user-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
-
+        currentIndex = 0;
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
 
         //trackID = "3ziCNz5vq8pEeRZjPElfYR";
         mpv = (MusicPlayerView) findViewById(R.id.mpv);
+        nextButton = (ImageView) findViewById(R.id.next);
         queue = Volley.newRequestQueue(this);
+        lock = new ReentrantLock();
 
         //playTrack();
+
+        nextButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Log.d("SpotifyActivity", "Called Skip");
+                if (playstart && currentIndex < playlistSize) {
+                    lock.lock();
+                    mPlayer.skipToNext();
+                    currentTrackID = nextTrackID;
+                    currentIndex++;
+                    loadTrackData();
+                    Toast.makeText(
+                            SpotifyActivity.this,
+                            "Skipped",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    lock.unlock();
+                }
+                else if (playstart) {
+                    Toast.makeText(
+                            SpotifyActivity.this,
+                            "Cannot Skip Ahead",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+        });
 
 
 
@@ -135,37 +171,17 @@ public class SpotifyActivity extends AppCompatActivity implements
         });
         artistView = (TextView) findViewById(R.id.textViewSinger);
         songView = (TextView) findViewById(R.id.textViewSong);
-        String trackname = "breakdown";
 
         PartyQueue.Builder b = new PartyQueue.Builder(
                 AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
         b.setApplicationName("party_queue_1243");
 
-        currentIndex = 0;
+
 
         service = b.build();
 
         Thread t = new Thread(new myrunnable(service));
         t.start();
-
-        /*class trackmanager implements Runnable {
-
-            public myrunnable() {
-
-            }
-
-            public void run () {
-                PartyQueueApiMessagesAccountResponse r;
-                try {
-                    r = service.partyqueue().signup(loginInfo).execute();
-                    Log.d("SptifyActivity", "ID = " + r.getId());
-                    Log.d("SptifyActivity", "Username = " + r.getUsername());
-                    Log.d("SptifyActivity", "Email = " + r.getEmail());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
 
 
     }
@@ -226,6 +242,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                         final String[] artistnames = new String[numResultsToShow];
                         final String[] songName = new String[numResultsToShow];
                         final String[] artistId = new String[numResultsToShow];
+                        String[] trackID = new String[numResultsToShow];
 
                         String type ="";
                         switch(button.getId()){
@@ -234,7 +251,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                                 try {
                                     for (int i=0; i<10; i++) {
                                         //artist = response.getJSONArray("artists").getJSONObject(0).getString("name");
-                                        songId[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("id");
+                                        songId[i] = response.getJSONObject(type + "s").getJSONArray("items").getJSONObject(i).getString("id");
                                         artistnames[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
                                         songName[i] = response.getJSONObject(type+"s").getJSONArray("items").getJSONObject(i).getString("name");
                                     }
@@ -280,6 +297,9 @@ public class SpotifyActivity extends AppCompatActivity implements
                                 final String title;
                                 if (button.getId() == R.id.button) {
                                     title = songName[0];
+                                    Thread t2 = new Thread(new addSongRunnable(service, songId[item.getItemId()], songName[item.getItemId()]));
+                                    t2.start();
+
                                     Toast.makeText(
                                             SpotifyActivity.this,
                                             //gets track name and prints it to page and alerts user
@@ -416,33 +436,10 @@ public class SpotifyActivity extends AppCompatActivity implements
             loadTrackData();
             mPlayer.play("spotify:track:" + currentTrackID);
             mpv.start();
+            currentIndex++;
             return true;
         }
         return false;
-
-
-
-        /*PartyQueueApiMessagesAccountResponse r;
-        try {
-            r = service.partyqueue().signup(loginInfo).execute();
-            Log.d("SptifyActivity", "ID = " + r.getId());
-            Log.d("SptifyActivity", "Username = " + r.getUsername());
-            Log.d("SptifyActivity", "Email = " + r.getEmail());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        /*Thread t = new Thread( new myrunnable(service, loginInfo));
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
-
-        //Log.d("SpotifyActivity", "playtrack end");
-
     }
 
     void pause() {
@@ -485,8 +482,20 @@ public class SpotifyActivity extends AppCompatActivity implements
         Log.d("SpotifyActivity", "Playback event received: " + eventType.name());
         switch (eventType) {
             case TRACK_CHANGED:
-                loadTrackData();
-                currentIndex++;
+
+                if (playerState.playing && (playerState.durationInMs - playerState.positionInMs) > 1) {
+                    Log.d("SpotifyActivity", "Track changed, but by skipping, so don't worry");
+                    Log.d("SpotifyActivity", "Position - duration (s) = "+ (playerState.positionInMs - playerState.durationInMs) / 1000);
+                    //currentTrackID = playerState.trackUri;
+                    //currentIndex++;
+                    //loadTrackData();
+                }
+                else {
+                    Log.d("SpotifyActivity", "Track changed, by track ending");
+                    currentTrackID = nextTrackID;
+                    currentIndex++;
+                    loadTrackData();
+                }
                 break;
             default:
                 break;
@@ -510,21 +519,6 @@ public class SpotifyActivity extends AppCompatActivity implements
         super.onDestroy();
     }
 
-    /*class trackmanager implements PlayerNotificationCallback {
-        @Override
-        public void onPlaybackError(ErrorType type, String details) {
-            Log.d("SpotifyActivity", "Playback Error (trackmanager)");
-        }
-        @Override
-        public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-            switch (eventType) {
-                case TRACK_CHANGED:
-                    loadTrackData();
-                    break;
-            }
-        }
-    }*/
-
     class myrunnable implements Runnable {
         PartyQueue service;
 
@@ -536,10 +530,9 @@ public class SpotifyActivity extends AppCompatActivity implements
             PartyQueueApiMessagesPlaylistResponse r;
             int count = 0;
             while (true) {
-                count++;
-                if (count > 5) break;
                 try {
-                    if (count == 1) {
+                    if (count == 0) {
+                        count++;
                         //PartyQueueApiMessagesPlaylistRequest p = new PartyQueueApiMessagesPlaylistRequest();
                         //p.setName("MyPlaylist");
                         //p.setUserid(USER_ID);
@@ -555,13 +548,20 @@ public class SpotifyActivity extends AppCompatActivity implements
                     //
                     //HttpResponse h = service.partyqueue().getPlaylist().setUserid(USER_ID).setPid(playlistID).executeUsingHead();
                     r = service.partyqueue().getPlaylist().setPid(playlistID).execute();
-
-                    PartyQueueApiMessagesSongMessage sng = r.getSongs().get(0);
+                    playlistSize = r.getSongs().size();
+                    if (currentIndex > playlistSize) currentIndex = 0;
+                    PartyQueueApiMessagesSongMessage sng = r.getSongs().get(currentIndex);
+                    Log.d("SpotifyActivity", "Songs in Q:\n\t"+r.getSongs().get(0)+"\n\t"+
+                            r.getSongs().get(1)+"\n\t"+r.getSongs().get(2)+"\n\t"+r.getSongs().get(3)+
+                            "\n\t"+r.getSongs().get(4)+"\n\t"+r.getSongs().get(5)+"\n\t"+r.getSongs().get(6)+"\n\t"+r.getSongs().get(7));
                     //playlistID = r.getPlaylists().get(0).getPid();
                     if (!playstart) firstTrack = sng.getSpotifyId();
                     if (playstart && (currentSongDuration - mpv.getProgress() > 3)) {
+                        lock.lock();
                         mPlayer.clearQueue();
                         mPlayer.queue("spotify:track:" + sng.getSpotifyId());
+                        nextTrackID = sng.getSpotifyId();
+                        lock.unlock();
                     }
                     Log.d("SpotifyActivity", "Just queued up " + sng.getSpotifyId());
                 } catch (IOException e) {
@@ -573,6 +573,31 @@ public class SpotifyActivity extends AppCompatActivity implements
                     Log.d("SpotifyActivity", "Sleep Exception");
                 }
             }
+        }
+    }
+
+    class addSongRunnable implements Runnable {
+        PartyQueue service;
+        String tID;
+        String name;
+
+        public addSongRunnable(PartyQueue s, String id, String n) {
+            service = s;
+            tID = id;
+            name = n;
+        }
+
+        public void run () {
+            PartyQueueApiMessagesAddSongRequest r = new PartyQueueApiMessagesAddSongRequest();
+            r.setPid(playlistID);
+            r.setName(name);
+            r.setSpotifyId(tID);
+
+            try {
+                service.partyqueue().addSong(r).execute();
+            } catch (IOException e) {e.printStackTrace(); Log.d("SpotifyActivity", "Error Adding a Song");}
+
+
         }
     }
 }

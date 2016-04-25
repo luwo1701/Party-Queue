@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (USER_ID == null || USER_ID == 0L) onLoginFailed();
         else onLoginSuccess();
+        progressDialog.dismiss();
         /*new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
