@@ -88,6 +88,7 @@ public class SpotifyActivity extends AppCompatActivity implements
     int currentSongDuration;
     int playlistSize;
     boolean playstart = false;
+    boolean done;
     RequestQueue queue;
     Integer numResultsToShow = new Integer(10);
 
@@ -101,7 +102,7 @@ public class SpotifyActivity extends AppCompatActivity implements
     Lock lock;
 
     PartyQueue service;
-
+    Thread t;
 
 
     @Override
@@ -112,6 +113,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         if (extras != null) {
             USER_ID = extras.getLong("USER_ID");
         }
+        done = false;
         ButterKnife.bind(this);
         Log.d("SpotifyActivity", "Started Activity");
         AuthenticationRequest.Builder builder =
@@ -127,7 +129,6 @@ public class SpotifyActivity extends AppCompatActivity implements
         queue = Volley.newRequestQueue(this);
         lock = new ReentrantLock();
 
-        //playTrack();
 
         nextButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -137,7 +138,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                     lock.lock();
                     mPlayer.skipToNext();
                     currentTrackID = nextTrackID;
-                    currentIndex++;
+                    currentIndex = (currentIndex + 1) % playlistSize;
                     loadTrackData();
                     Toast.makeText(
                             SpotifyActivity.this,
@@ -180,7 +181,7 @@ public class SpotifyActivity extends AppCompatActivity implements
 
         service = b.build();
 
-        Thread t = new Thread(new myrunnable(service));
+        t = new Thread(new myrunnable(service));
         t.start();
 
 
@@ -436,7 +437,7 @@ public class SpotifyActivity extends AppCompatActivity implements
             loadTrackData();
             mPlayer.play("spotify:track:" + currentTrackID);
             mpv.start();
-            currentIndex++;
+            currentIndex = (currentIndex + 1) % playlistSize;
             return true;
         }
         return false;
@@ -493,7 +494,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                 else {
                     Log.d("SpotifyActivity", "Track changed, by track ending");
                     currentTrackID = nextTrackID;
-                    currentIndex++;
+                    currentIndex = (currentIndex + 1) % playlistSize;
                     loadTrackData();
                 }
                 break;
@@ -513,6 +514,15 @@ public class SpotifyActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStop() {
+        done = true;
+        try {
+            t.join();
+        } catch (InterruptedException e) {e.printStackTrace();}
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
         Spotify.destroyPlayer(this);
@@ -529,7 +539,7 @@ public class SpotifyActivity extends AppCompatActivity implements
         public void run () {
             PartyQueueApiMessagesPlaylistResponse r;
             int count = 0;
-            while (true) {
+            while (!done) {
                 try {
                     if (count == 0) {
                         count++;
@@ -549,7 +559,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                     //HttpResponse h = service.partyqueue().getPlaylist().setUserid(USER_ID).setPid(playlistID).executeUsingHead();
                     r = service.partyqueue().getPlaylist().setPid(playlistID).execute();
                     playlistSize = r.getSongs().size();
-                    if (currentIndex > playlistSize) currentIndex = 0;
+                    //if (currentIndex > playlistSize) currentIndex = 0;
                     PartyQueueApiMessagesSongMessage sng = r.getSongs().get(currentIndex);
                     Log.d("SpotifyActivity", "Songs in Q:\n\t"+r.getSongs().get(0)+"\n\t"+
                             r.getSongs().get(1)+"\n\t"+r.getSongs().get(2)+"\n\t"+r.getSongs().get(3)+
@@ -568,7 +578,7 @@ public class SpotifyActivity extends AppCompatActivity implements
                     e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     Log.d("SpotifyActivity", "Sleep Exception");
                 }

@@ -1,1 +1,2 @@
-include ':app', ':playerview', ':volley', ':WebAPI'
+
+include ':app', ':playerview',':WebAPI', ':volley'

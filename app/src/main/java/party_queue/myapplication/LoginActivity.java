@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.content.Intent;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         USER_ID = 0L;
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 login();
@@ -54,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // Start the Signup activity
@@ -100,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (USER_ID == null || USER_ID == 0L) onLoginFailed();
         else onLoginSuccess();
-        progressDialog.dismiss();
         /*new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -154,7 +152,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this, SpotifyActivity.class);
+        //Intent intent = new Intent(this, SpotifyActivity.class);
+        Intent intent = new Intent(this, MenuActivity.class);
+
         intent.putExtra("USER_ID", USER_ID);
         startActivity(intent);
         finish();
