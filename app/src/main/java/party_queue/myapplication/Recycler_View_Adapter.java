@@ -25,7 +25,11 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
     List<Data> list = Collections.emptyList();
     Context context;
 
-
+    /**
+     * Constructor for the recycler view adapter.
+     * @param list the list of songs
+     * @param context the current context
+     */
     public Recycler_View_Adapter(List<Data> list, Context context) {
         this.list = list;
         this.context = context;
@@ -64,13 +68,20 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    // Insert a new item to the RecyclerView on a predefined position
+    /**
+     *  Insert a new item to the RecyclerView on a predefined position
+     * @param position integer position in list
+     * @param data the new song data
+     */
     public void insert(int position, Data data) {
         list.add(position, data);
         notifyItemInserted(position);
     }
 
-    // Remove a RecyclerView item containing a specified Data object
+    /**
+     * Remove a RecyclerView item containing a specified Data object.
+     * @param data data object to be removed
+     */
     public void remove(Data data) {
         int position = list.indexOf(data);
         list.remove(position);
@@ -144,6 +155,13 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<Recycler_View_Ad
         int vote;
         Long songID;
         PartyQueue service;
+
+        /**
+         * vote on a song
+         * @param s the backend service
+         * @param i the song id
+         * @param v the vote count
+         */
         public vote(PartyQueue s, Long i, int v) {
             service = s;
             songID = i;

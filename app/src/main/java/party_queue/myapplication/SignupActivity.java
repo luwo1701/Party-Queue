@@ -62,22 +62,42 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * get the email string entered by the user
+     * @return name of user
+     */
     public String getnameText(){
         return _nameText.getText().toString();
     }
 
+    /**
+     * get the email string entered by the user
+     * @return email
+     */
     public String getemailText(){
         return _emailText.getText().toString();
     }
 
+    /**
+     * get the password entered by the user
+     * @return password
+     */
     public String getpasswordTest(){
         return _passwordText.getText().toString();
     }
 
-
+    /**
+     * Tell the user an error occured.
+     * @param editText the field for the error to be displayed on
+     * @param msg the error message
+     */
     public void setError(EditText editText, String msg){
         editText.setError(msg);
     }
+
+    /**
+     * Signup the user and log them in if they pass validation.
+     */
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -137,7 +157,9 @@ public class SignupActivity extends AppCompatActivity {
                 }, 3000);
     }
 
-
+    /**
+     * tell the user that signup was succesful and finish the activity
+     */
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         Intent resultIntent = new Intent();
@@ -146,6 +168,9 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * tell the user that signup failed and renable the signup button
+     */
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
@@ -153,7 +178,10 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * validate the email, name, and password parameters provided by the user
+     * @return true if validation passes, false otherwise
+     */
     public Boolean validate() {
         Boolean valid = true;
 

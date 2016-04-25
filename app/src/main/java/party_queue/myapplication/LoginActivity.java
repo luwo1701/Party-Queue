@@ -63,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Attempt to validate credentials with backend and login.
+     */
     public void login() {
         Log.d(TAG, "Login");
 
@@ -149,6 +152,9 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+    /**
+     * Login was successful, so enable the login and start the MenuActivity.
+     */
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Login success", Toast.LENGTH_LONG).show();
@@ -160,12 +166,19 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Tells the user that login failed and renables the login button.
+     */
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
 
+    /**
+     * Validates the email and password fields entered by the user.
+     * @return true for success, false for failure
+     */
     public boolean validate() {
         boolean valid = true;
 

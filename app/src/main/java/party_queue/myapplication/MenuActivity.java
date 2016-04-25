@@ -48,6 +48,9 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * If the "host" button is clicked, send the host ot the SpotifyActivity to add songs and manage song play.
+     */
     public void host(){
         Intent intent = new Intent(this, SpotifyActivity.class);
         intent.putExtra("USER_ID", USER_ID);
@@ -55,6 +58,10 @@ public class MenuActivity extends AppCompatActivity {
         //finish();
     }
 
+    /**
+     * If the user searched for a queue by username, send them to the party associated with that username
+     * @param username the username of the party that was searched for
+     */
     public void guest(String username){
         Intent intent = new Intent(this, QueueActivity.class);
         intent.putExtra("username", username);
