@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Party-Queue.iml" filepath="$PROJECT_DIR$/Party-Queue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebAPI/WebAPI.iml" filepath="$PROJECT_DIR$/WebAPI/WebAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebAPI/WebAPI.iml" filepath="$PROJECT_DIR$/WebAPI/WebAPI.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/playerview/playerview.iml" filepath="$PROJECT_DIR$/playerview/playerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/playerview/playerview.iml" filepath="$PROJECT_DIR$/playerview/playerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/volley/volley.iml" filepath="$PROJECT_DIR$/volley/volley.iml" />
     </modules>
