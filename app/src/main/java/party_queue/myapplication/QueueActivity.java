@@ -16,10 +16,16 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.*;
 import com.android.volley.*;
+import com.appspot.party_queue_1243.party_queue.PartyQueue;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesAddSongRequest;
+import com.appspot.party_queue_1243.party_queue.model.PartyQueueApiMessagesPlaylistResponse;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.json.gson.GsonFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -42,8 +48,16 @@ public class QueueActivity extends AppCompatActivity {
     Recycler_View_Adapter adapter;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public void fill_with_data() {
-        /*Data holds information for songs in the queue*/
+    boolean init;
+    Long playlistID;
+    String usertarget;
+    PartyQueue service;
+
+    String tID;
+    Long URI;
+
+    /*public void fill_with_data() {
+        *//*Data holds information for songs in the queue*//*
         data = new ArrayList<>();
         data.add(new Data("Yours Truly", "http://www.flat-e.com/flate5/wp-content/uploads/cover-960x857.jpg", "test uri for Yours Truly"));
         data.add(new Data("Song 2", "http://cache.boston.com/resize/bonzai-fba/Globe_Photo/2011/04/14/1302796985_4480/539w.jpg", "test uri 2"));
@@ -53,14 +67,31 @@ public class QueueActivity extends AppCompatActivity {
         data.add(new Data("Song 6", "http://tympanikaudio.com/wp/wp-content/uploads/no_coverart.jpg", "test uri 6"));
 
 
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+        Log.d("MenuActivity", "Menu Activity");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            usertarget = extras.getString("username");
+            Log.d("MenuActivity", "got username");
+        }
+        PartyQueue.Builder b = new PartyQueue.Builder(
+                AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+        b.setApplicationName("party_queue_1243");
 
-        fill_with_data();
+        service = b.build();
+        queue = Volley.newRequestQueue(this);
+
+        init = false;
+        Thread t1 = new Thread(new fillData(service));
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e){e.printStackTrace();}
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         adapter = new Recycler_View_Adapter(data, getApplication());
@@ -69,7 +100,7 @@ public class QueueActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        queue = Volley.newRequestQueue(this);
+
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
@@ -82,9 +113,20 @@ public class QueueActivity extends AppCompatActivity {
         });
     }
 
+    PartyQueue getService() {
+        return service;
+    }
+
+
     void refreshItems() {
         // Load items
         // ...
+        Log.d("MenuActivity", "RefreshItems");
+        Thread t1 = new Thread(new fillData(service));
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {e.printStackTrace();}
 
         // Load complete
         onItemsLoadComplete();
@@ -93,6 +135,7 @@ public class QueueActivity extends AppCompatActivity {
     void onItemsLoadComplete() {
         // Update the adapter and notify data set changed
         // ...
+        Log.d("MenuActivity", "LoadComplete");
         adapter.notifyDataSetChanged();
         // Stop refresh animation
         mSwipeRefreshLayout.setRefreshing(false);
@@ -103,7 +146,7 @@ public class QueueActivity extends AppCompatActivity {
 
     public void searchButtonClick(View v)
     {
-
+        Log.d("MenuActivity", "SearchButtonClick");
         // do something when search button is clicked
         String search = _searchText.getText().toString().replaceAll(" ","+"); //grabs string from _searchText text box defined in activity_spotify.xml
 
@@ -185,6 +228,8 @@ public class QueueActivity extends AppCompatActivity {
                                 final String title;
                                 if (button.getId() == R.id.button) {
                                     title = songName[0];
+                                    Thread t2 = new Thread(new addSongRunnable(service, songId[item.getItemId()], songName[item.getItemId()]));
+                                    t2.start();
                                     Toast.makeText(
                                             QueueActivity.this,
                                             //gets track name and prints it to page and alerts user
@@ -280,5 +325,81 @@ public class QueueActivity extends AppCompatActivity {
     }*/
 
 
+    public class fillData implements Runnable {
+        PartyQueue service;
+        PartyQueueApiMessagesPlaylistResponse r;
+        int playlistSize;
+        public fillData(PartyQueue s) {
+            service = s;
+        }
+        public void run() {
+            Log.d("MenuActivity", "RUN");
+            if (!init){
+                try {
+                    playlistID = service.partyqueue().getPlaylistsForUserByName().setUsername(usertarget).execute().getPlaylists().get(0).getPid();
+                    init = true;
+                } catch (IOException e) {e.printStackTrace();}
+            }
+            if (playlistID != null) {
+                try {
+                    data = new ArrayList<>();
+                    r = service.partyqueue().getPlaylist().setPid(playlistID).execute();
+                    playlistSize = r.getSongs().size();
+                    Log.d("MenuActivity", "playlist size = "+playlistSize);
+                    for (int i=0; i<playlistSize; i++){
+                        tID = r.getSongs().get(i).getSpotifyId();
+                        URI = r.getSongs().get(i).getId();
+                        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                            (Request.Method.GET, "https://api.spotify.com/v1/tracks/"+tID, null, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    String songname = "", artistname = "", imgurl = "";
+                                    try {
+                                        songname = response.getString("name");
+                                        artistname = response.getJSONArray("artists").getJSONObject(0).getString("name");
+                                        imgurl = response.getJSONObject("album").getJSONArray("images").getJSONObject(1).getString("url");
+                                        data.add(new Data(songname, imgurl, URI, service));
+                                        Log.d("QActivity", "Success");
+                                    } catch (JSONException e) {
+                                        Log.d("QActivity", "Error in load data");}
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // TODO Auto-generated method stub
+                                    Log.d("QActivity", "ERRorlistenerdeal");
+                                }
+                            });
+                        queue.add(jsObjRequest);
+                    }
+                } catch (IOException e) {e.printStackTrace();}
+            }
+        }
+    }
+    class addSongRunnable implements Runnable {
+        PartyQueue service;
+        String tID;
+        String name;
+
+        public addSongRunnable(PartyQueue s, String id, String n) {
+            service = s;
+            tID = id;
+            name = n;
+        }
+
+        public void run () {
+            PartyQueueApiMessagesAddSongRequest r = new PartyQueueApiMessagesAddSongRequest();
+            r.setPid(playlistID);
+            r.setName(name);
+            r.setSpotifyId(tID);
+
+            try {
+                service.partyqueue().addSong(r).execute();
+            } catch (IOException e) {e.printStackTrace(); Log.d("SpotifyActivity", "Error Adding a Song");}
+
+
+        }
+    }
 
 }
